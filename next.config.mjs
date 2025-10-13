@@ -11,9 +11,9 @@ const nextConfig = {
   },
   // Performance optimizations
   reactStrictMode: true,
-  swcMinify: true,
+  // KEEP console logs in production for debugging
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: false,
   },
   // Enable experimental features for better performance
   experimental: {
