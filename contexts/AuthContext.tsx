@@ -115,16 +115,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
       console.log('🔄 Auth state changed:', _event, session?.user?.id || 'No user')
       setUser(session?.user ?? null)
+      
       if (session?.user) {
-        await Promise.all([
-          fetchProfile(session.user.id),
-          checkWaitlistStatus()
-        ])
+        try {
+          // Add timeout to prevent infinite hanging
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Auth fetch timeout')), 5000)
+          )
+          
+          await Promise.race([
+            Promise.all([
+              fetchProfile(session.user.id),
+              checkWaitlistStatus()
+            ]),
+            timeoutPromise
+          ])
+          console.log('✅ Profile and waitlist fetched')
+        } catch (error) {
+          console.error('⚠️ Auth fetch error or timeout:', error)
+          // Continue anyway - don't block the app
+        }
       } else {
         setProfile(null)
         setWaitlistStatus(null)
       }
-      // CRITICAL: Set loading to false after auth state change completes
+      
+      // CRITICAL: ALWAYS set loading to false, even if fetches fail
       setLoading(false)
       console.log('✅ Auth state change complete')
     })
