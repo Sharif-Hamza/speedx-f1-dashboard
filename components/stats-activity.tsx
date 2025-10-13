@@ -211,14 +211,26 @@ export function StatsActivity() {
           simpleCompleted
         })
 
-        // Set most recent trip - preserve route_snapshot_url if new fetch doesn't have it
+        // Set most recent trip - handle duplicate trips with same timestamp
         const newRecentTrip = trips[0]
-        console.log('📸 Route snapshot URL:', newRecentTrip.route_snapshot_url)
+        console.log('📸 Most recent trip ID:', newRecentTrip.id, 'Snapshot:', newRecentTrip.route_snapshot_url || 'NULL')
         
-        // If the new trip doesn't have a snapshot but we already have one for this trip, keep it
-        if (!newRecentTrip.route_snapshot_url && recentTrip?.id === newRecentTrip.id && recentTrip.route_snapshot_url) {
-          console.log('♻️ Preserving existing snapshot URL:', recentTrip.route_snapshot_url)
-          newRecentTrip.route_snapshot_url = recentTrip.route_snapshot_url
+        // If the most recent trip doesn't have a snapshot, look for a duplicate with the same started_at
+        if (!newRecentTrip.route_snapshot_url) {
+          const duplicateWithSnapshot = trips.find(t => 
+            t.started_at === newRecentTrip.started_at && 
+            t.id !== newRecentTrip.id && 
+            t.route_snapshot_url
+          )
+          
+          if (duplicateWithSnapshot) {
+            console.log('♻️ Found duplicate trip with snapshot URL:', duplicateWithSnapshot.route_snapshot_url)
+            newRecentTrip.route_snapshot_url = duplicateWithSnapshot.route_snapshot_url
+          } else if (recentTrip?.started_at === newRecentTrip.started_at && recentTrip.route_snapshot_url) {
+            // Fallback: preserve from previous state if same timestamp
+            console.log('♻️ Preserving snapshot from previous state')
+            newRecentTrip.route_snapshot_url = recentTrip.route_snapshot_url
+          }
         }
         
         setRecentTrip(newRecentTrip)
