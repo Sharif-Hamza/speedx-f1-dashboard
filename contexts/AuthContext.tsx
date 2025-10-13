@@ -124,6 +124,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setProfile(null)
         setWaitlistStatus(null)
       }
+      // CRITICAL: Set loading to false after auth state change completes
+      setLoading(false)
+      console.log('✅ Auth state change complete')
     })
 
     return () => subscription.unsubscribe()
