@@ -27,6 +27,7 @@ export default function MissionControl() {
 
   // Check authentication and waitlist approval
   useEffect(() => {
+    // CRITICAL: Always stop checking after loading completes
     if (!loading && mounted) {
       console.log('🔍 Dashboard Auth Check:', {
         hasUser: !!user,
@@ -34,6 +35,9 @@ export default function MissionControl() {
         profileApproved: profile?.waitlist_approved,
         waitlistStatus: waitlistStatus?.status || null,
       })
+
+      // Stop the loading screen immediately
+      setIsChecking(false)
 
       if (!user) {
         // No user logged in, redirect to waitlist
@@ -54,13 +58,8 @@ export default function MissionControl() {
         return
       }
 
-      // User is approved in any of these cases:
-      // 1. No waitlist entry (existing user before waitlist)
-      // 2. Waitlist status is "approved"
-      // 3. Profile has waitlist_approved = true
-      // 4. Profile is null (very old user, no profile yet)
+      // User is approved - dashboard will show
       console.log('✅ User approved, showing dashboard')
-      setIsChecking(false)
     }
   }, [user, profile, waitlistStatus, loading, mounted, router])
 
