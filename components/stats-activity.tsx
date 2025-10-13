@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { MonitorPanel } from "./monitor-panel"
 import { supabase } from "@/lib/supabase"
 import { useAuth } from "@/contexts/AuthContext"
@@ -159,38 +159,7 @@ export function StatsActivity() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<"stats" | "badges" | "recent">("stats")
 
-  useEffect(() => {
-    if (user?.id) {
-      fetchUserData()
-      
-      // Subscribe to real-time trip updates (for route snapshot URLs)
-      const tripsChannel = supabase
-        .channel('trips-updates')
-        .on(
-          'postgres_changes',
-          {
-            event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
-            schema: 'public',
-            table: 'trips',
-            filter: `user_id=eq.${user.id}`
-          },
-          (payload) => {
-            console.log('🔄 [StatsActivity] Trip updated:', payload)
-            // Refresh data when trips change
-            fetchUserData()
-          }
-        )
-        .subscribe()
-
-      // Cleanup subscription on unmount
-      return () => {
-        console.log('🧹 [StatsActivity] Cleaning up trips subscription')
-        supabase.removeChannel(tripsChannel)
-      }
-    }
-  }, [user])
-
-  const fetchUserData = async () => {
+  const fetchUserData = useCallback(async () => {
     if (!user?.id) return
 
     try {
@@ -275,7 +244,38 @@ export function StatsActivity() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [user?.id])
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchUserData()
+      
+      // Subscribe to real-time trip updates (for route snapshot URLs)
+      const tripsChannel = supabase
+        .channel('trips-updates')
+        .on(
+          'postgres_changes',
+          {
+            event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+            schema: 'public',
+            table: 'trips',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            console.log('🔄 [StatsActivity] Trip updated:', payload)
+            // Refresh data when trips change
+            fetchUserData()
+          }
+        )
+        .subscribe()
+
+      // Cleanup subscription on unmount
+      return () => {
+        console.log('🧹 [StatsActivity] Cleaning up trips subscription')
+        supabase.removeChannel(tripsChannel)
+      }
+    }
+  }, [user?.id, fetchUserData])
 
   const formatDuration = (seconds: number) => {
     const hours = Math.floor(seconds / 3600)
