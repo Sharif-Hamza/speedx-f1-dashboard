@@ -26,20 +26,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter()
 
   const checkWaitlistStatus = async () => {
-    if (!user) {
+    // Get current user from auth session directly
+    const { data: { session } } = await supabase.auth.getSession()
+    const currentUser = session?.user
+    
+    if (!currentUser) {
       setWaitlistStatus(null)
       return
     }
 
     try {
+      console.log('🔍 Checking waitlist status for user:', currentUser.id)
       const { data, error } = await supabase
         .from('waitlist_users')
         .select('*')
-        .eq('auth_user_id', user.id)
+        .eq('auth_user_id', currentUser.id)
         .maybeSingle()
 
       if (error) {
-        console.error('Error checking waitlist status:', error)
+        console.error('❌ Error checking waitlist status:', error)
         // If no waitlist entry, user is approved by default (existing user)
         setWaitlistStatus(null)
         return
@@ -47,12 +52,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // If no waitlist entry exists, user is an existing user (approved)
       if (!data) {
+        console.log('✅ No waitlist entry - user is approved (existing user)')
         setWaitlistStatus(null)
       } else {
+        console.log('📋 Waitlist status:', data.status)
         setWaitlistStatus(data)
       }
     } catch (error) {
-      console.error('Error checking waitlist status:', error)
+      console.error('❌ Error checking waitlist status:', error)
       setWaitlistStatus(null)
     }
   }
@@ -89,23 +96,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      console.log('🔐 Initial session check:', session?.user?.id || 'No user')
       setUser(session?.user ?? null)
       if (session?.user) {
-        fetchProfile(session.user.id)
-        checkWaitlistStatus()
+        await Promise.all([
+          fetchProfile(session.user.id),
+          checkWaitlistStatus()
+        ])
       }
       setLoading(false)
+      console.log('✅ Auth loading complete')
     })
 
     // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      console.log('🔄 Auth state changed:', _event, session?.user?.id || 'No user')
       setUser(session?.user ?? null)
       if (session?.user) {
-        await fetchProfile(session.user.id)
-        await checkWaitlistStatus()
+        await Promise.all([
+          fetchProfile(session.user.id),
+          checkWaitlistStatus()
+        ])
       } else {
         setProfile(null)
         setWaitlistStatus(null)

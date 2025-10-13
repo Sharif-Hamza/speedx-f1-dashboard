@@ -185,26 +185,34 @@ export function MaxSpeedLeaderboard() {
     fetchLeaderboard()
   }, [user, viewMode])
 
-  // Subscribe to new trips for real-time updates
+  // Real-time updates: Subscribe to new trips + aggressive polling
   useEffect(() => {
+    // Subscribe to database changes
     const channel = supabase
       .channel("max-speed-leaderboard-updates")
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "*", // Listen to ALL changes (INSERT, UPDATE, DELETE)
           schema: "public",
           table: "trips",
         },
         () => {
-          console.log("🔄 New trip detected, refreshing max speed leaderboard...")
+          console.log("🔄 Trip change detected, refreshing max speed leaderboard...")
           fetchLeaderboard()
         }
       )
       .subscribe()
 
+    // Aggressive polling: Refresh every 5 seconds
+    const pollInterval = setInterval(() => {
+      console.log("⏰ [MaxSpeedLeaderboard] Auto-refresh (5s poll)")
+      fetchLeaderboard()
+    }, 5000) // 5 seconds
+
     return () => {
       supabase.removeChannel(channel)
+      clearInterval(pollInterval)
     }
   }, [user, viewMode])
 

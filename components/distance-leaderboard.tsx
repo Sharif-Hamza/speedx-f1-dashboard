@@ -169,26 +169,34 @@ export function DistanceLeaderboard() {
     fetchLeaderboard()
   }, [user, viewMode])
 
-  // Subscribe to new trips for real-time updates
+  // Real-time updates: Subscribe to new trips + aggressive polling
   useEffect(() => {
+    // Subscribe to database changes
     const channel = supabase
       .channel("distance-leaderboard-updates")
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "*", // Listen to ALL changes
           schema: "public",
           table: "trips",
         },
         () => {
-          console.log("🔄 New trip detected, refreshing distance leaderboard...")
+          console.log("🔄 Trip change detected, refreshing distance leaderboard...")
           fetchLeaderboard()
         }
       )
       .subscribe()
 
+    // Aggressive polling: Refresh every 5 seconds
+    const pollInterval = setInterval(() => {
+      console.log("⏰ [DistanceLeaderboard] Auto-refresh (5s poll)")
+      fetchLeaderboard()
+    }, 5000)
+
     return () => {
       supabase.removeChannel(channel)
+      clearInterval(pollInterval)
     }
   }, [user, viewMode])
 

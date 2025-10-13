@@ -87,29 +87,37 @@ export function SpeedStats() {
     return () => clearInterval(interval)
   }, [stats.maxSpeed])
 
-  // Subscribe to new trips for real-time updates
+  // Real-time updates: Subscribe to new trips + aggressive polling
   useEffect(() => {
     if (!user) return
 
+    // Subscribe to database changes
     const channel = supabase
       .channel("speed-stats-updates")
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "*", // Listen to ALL changes
           schema: "public",
           table: "trips",
           filter: `user_id=eq.${user.id}`,
         },
         () => {
-          console.log("🔄 New trip detected, refreshing speed stats...")
+          console.log("🔄 Trip change detected, refreshing speed stats...")
           fetchSpeedStats()
         }
       )
       .subscribe()
 
+    // Aggressive polling: Refresh every 5 seconds
+    const pollInterval = setInterval(() => {
+      console.log("⏰ [SpeedStats] Auto-refresh (5s poll)")
+      fetchSpeedStats()
+    }, 5000)
+
     return () => {
       supabase.removeChannel(channel)
+      clearInterval(pollInterval)
     }
   }, [user])
 

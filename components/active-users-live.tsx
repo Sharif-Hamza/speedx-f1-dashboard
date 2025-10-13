@@ -41,8 +41,11 @@ export function ActiveUsersLive() {
       )
       .subscribe()
 
-    // Auto-refresh every 30 seconds to clean up stale sessions
-    const interval = setInterval(fetchActiveUsers, 30000)
+    // Aggressive polling: Refresh every 5 seconds for real-time feel
+    const interval = setInterval(() => {
+      console.log("⏰ [ActiveUsers] Auto-refresh (5s poll)")
+      fetchActiveUsers()
+    }, 5000)
 
     return () => {
       channel.unsubscribe()

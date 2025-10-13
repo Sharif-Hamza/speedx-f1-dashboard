@@ -269,10 +269,17 @@ export function StatsActivity() {
         )
         .subscribe()
 
+      // Aggressive polling: Refresh every 5 seconds
+      const pollInterval = setInterval(() => {
+        console.log("⏰ [StatsActivity] Auto-refresh (5s poll)")
+        fetchUserData()
+      }, 5000)
+
       // Cleanup subscription on unmount
       return () => {
         console.log('🧹 [StatsActivity] Cleaning up trips subscription')
         supabase.removeChannel(tripsChannel)
+        clearInterval(pollInterval)
       }
     }
   }, [user?.id, fetchUserData])
