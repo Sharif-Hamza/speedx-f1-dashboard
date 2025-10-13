@@ -572,10 +572,15 @@ export function StatsActivity() {
                               src={recentTrip.route_snapshot_url} 
                               alt="Route map" 
                               className="w-full h-full object-cover"
+                              crossOrigin="anonymous"
+                              onLoad={() => {
+                                console.log('✅ Route map loaded successfully:', recentTrip.route_snapshot_url)
+                              }}
                               onError={(e) => {
-                                // Fallback if image fails to load
-                                e.currentTarget.style.display = 'none'
-                                e.currentTarget.parentElement!.innerHTML = '<div class="flex items-center justify-center h-full"><div class="text-center"><div class="text-3xl mb-2">🗺️</div><p class="text-xs text-[#666]">Route not available</p></div></div>'
+                                console.error('❌ Route map failed to load:', recentTrip.route_snapshot_url)
+                                console.error('Error details:', e)
+                                // DON'T hide the image - just log the error
+                                // The image might still be loading or there might be a CORS issue
                               }}
                             />
                           </div>
