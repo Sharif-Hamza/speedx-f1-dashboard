@@ -162,21 +162,28 @@ export function StatsActivity() {
   const [imageError, setImageError] = useState(false)
 
   const fetchUserData = useCallback(async () => {
-    if (!user?.id) return
+    if (!user?.id) {
+      console.log("⚠️ [StatsActivity] No user ID, skipping fetch")
+      return
+    }
 
     try {
       console.log("📊 [StatsActivity] Fetching user data for:", user.id)
+      console.log("🔄 [StatsActivity] Timestamp:", new Date().toISOString())
       
-      // Fetch user trips
-      const { data: trips, error: tripsError } = await supabase
+      // Fetch user trips with more details
+      const { data: trips, error: tripsError, count } = await supabase
         .from("trips")
-        .select("*")
+        .select("*", { count: 'exact' })
         .eq("user_id", user.id)
         .order("started_at", { ascending: false })
 
       if (tripsError) {
         console.error("❌ [StatsActivity] Error fetching trips:", tripsError)
+        throw tripsError
       }
+      
+      console.log(`✅ [StatsActivity] Fetched ${trips?.length || 0} trips (count: ${count})`)
 
       // Fetch user badges (no join needed - badge details come from BadgeCollection)
       const { data: userBadges, error: badgesError } = await supabase
@@ -193,6 +200,12 @@ export function StatsActivity() {
 
       // Calculate stats from trips
       if (trips && trips.length > 0) {
+        // Log any trips with missing data
+        const tripsWithoutDistance = trips.filter(t => !t.distance_m || t.distance_m === 0)
+        if (tripsWithoutDistance.length > 0) {
+          console.warn(`⚠️ [StatsActivity] ${tripsWithoutDistance.length} trips missing distance_m`)
+        }
+        
         const totalDistance = trips.reduce((sum, t) => sum + (t.distance_m || 0), 0) * 0.000621371 // to miles
         const maxSpeed = Math.max(...trips.map(t => (t.max_speed_mps || 0) * 2.23694)) // to mph
         const avgSpeedMps = trips.reduce((sum, t) => sum + (t.avg_speed_mps || 0), 0) / trips.length

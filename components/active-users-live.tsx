@@ -55,17 +55,35 @@ export function ActiveUsersLive() {
 
   const fetchActiveUsers = async () => {
     try {
-      const { data, error } = await supabase
+      console.log('🔄 [ActiveUsers] Fetching active sessions...')
+      
+      const { data, error, count } = await supabase
         .from('active_sessions')
-        .select('*')
+        .select('*', { count: 'exact' })
         .order('started_at', { ascending: false })
 
-      if (error) throw error
+      if (error) {
+        console.error('❌ [ActiveUsers] Error fetching:', error)
+        throw error
+      }
 
-      setActiveUsers(data || [])
-      setOnlineCount(data?.length || 0)
+      console.log(`✅ [ActiveUsers] Found ${data?.length || 0} active sessions (count: ${count})`, data)
+      
+      // Filter out stale sessions (older than 30 seconds)
+      const now = new Date().getTime()
+      const filteredData = (data || []).filter(session => {
+        const lastHeartbeat = new Date(session.last_heartbeat).getTime()
+        const age = (now - lastHeartbeat) / 1000 // seconds
+        return age < 30 // Only show sessions with heartbeat in last 30s
+      })
+      
+      console.log(`🔍 [ActiveUsers] After filtering stale: ${filteredData.length} active`)
+      
+      setActiveUsers(filteredData)
+      setOnlineCount(filteredData.length)
     } catch (error) {
-      console.error('Error fetching active users:', error)
+      console.error('❌ [ActiveUsers] Error fetching active users:', error)
+      // Keep showing previous data on error
     }
   }
 
