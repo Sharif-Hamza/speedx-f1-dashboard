@@ -158,6 +158,8 @@ export function StatsActivity() {
   const [recentTrip, setRecentTrip] = useState<Trip | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<"stats" | "badges" | "recent">("stats")
+  const [imageLoading, setImageLoading] = useState(true)
+  const [imageError, setImageError] = useState(false)
 
   const fetchUserData = useCallback(async () => {
     if (!user?.id) return
@@ -567,22 +569,35 @@ export function StatsActivity() {
                           ROUTE MAP
                         </div>
                         {recentTrip.route_snapshot_url ? (
-                          <div className="aspect-video bg-[#1A1A1A] rounded overflow-hidden" style={{ borderRadius: "6px" }}>
+                          <div className="aspect-video bg-[#1A1A1A] rounded overflow-hidden relative" style={{ borderRadius: "6px" }}>
+                            {imageLoading && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00D9FF]"></div>
+                              </div>
+                            )}
                             <img 
                               src={recentTrip.route_snapshot_url} 
                               alt="Route map" 
                               className="w-full h-full object-cover"
-                              crossOrigin="anonymous"
                               onLoad={() => {
                                 console.log('✅ Route map loaded successfully:', recentTrip.route_snapshot_url)
+                                setImageLoading(false)
+                                setImageError(false)
                               }}
                               onError={(e) => {
                                 console.error('❌ Route map failed to load:', recentTrip.route_snapshot_url)
-                                console.error('Error details:', e)
-                                // DON'T hide the image - just log the error
-                                // The image might still be loading or there might be a CORS issue
+                                setImageLoading(false)
+                                setImageError(true)
                               }}
                             />
+                            {imageError && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-[#1A1A1A]">
+                                <div className="text-center">
+                                  <div className="text-3xl mb-2">🗺️</div>
+                                  <p className="text-xs text-[#666]">Failed to load route map</p>
+                                </div>
+                              </div>
+                            )}
                           </div>
                         ) : (
                           <div className="aspect-video bg-[#1A1A1A] rounded flex items-center justify-center" style={{ borderRadius: "6px" }}>
