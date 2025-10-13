@@ -162,6 +162,31 @@ export function StatsActivity() {
   useEffect(() => {
     if (user?.id) {
       fetchUserData()
+      
+      // Subscribe to real-time trip updates (for route snapshot URLs)
+      const tripsChannel = supabase
+        .channel('trips-updates')
+        .on(
+          'postgres_changes',
+          {
+            event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+            schema: 'public',
+            table: 'trips',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            console.log('🔄 [StatsActivity] Trip updated:', payload)
+            // Refresh data when trips change
+            fetchUserData()
+          }
+        )
+        .subscribe()
+
+      // Cleanup subscription on unmount
+      return () => {
+        console.log('🧹 [StatsActivity] Cleaning up trips subscription')
+        supabase.removeChannel(tripsChannel)
+      }
     }
   }, [user])
 
