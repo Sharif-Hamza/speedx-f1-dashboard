@@ -19,7 +19,6 @@ export default function MissionControl() {
   const [activeSection, setActiveSection] = useState("lobby")
   const { user, profile, waitlistStatus, loading } = useAuth()
   const router = useRouter()
-  const [isChecking, setIsChecking] = useState(true)
 
   useEffect(() => {
     setMounted(true)
@@ -27,7 +26,6 @@ export default function MissionControl() {
 
   // Check authentication and waitlist approval
   useEffect(() => {
-    // CRITICAL: Always stop checking after loading completes
     if (!loading && mounted) {
       console.log('🔍 Dashboard Auth Check:', {
         hasUser: !!user,
@@ -35,9 +33,6 @@ export default function MissionControl() {
         profileApproved: profile?.waitlist_approved,
         waitlistStatus: waitlistStatus?.status || null,
       })
-
-      // Stop the loading screen immediately
-      setIsChecking(false)
 
       if (!user) {
         // No user logged in, redirect to waitlist
@@ -76,8 +71,8 @@ export default function MissionControl() {
     return null
   }
 
-  // Show loading state while auth is being checked
-  if (loading || isChecking) {
+  // Show loading ONLY while auth is being checked - NOT after
+  if (loading) {
     return (
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
         <div className="text-center">
