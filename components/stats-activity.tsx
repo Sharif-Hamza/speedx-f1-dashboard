@@ -209,8 +209,17 @@ export function StatsActivity() {
           simpleCompleted
         })
 
-        // Set most recent trip
-        setRecentTrip(trips[0])
+        // Set most recent trip - preserve route_snapshot_url if new fetch doesn't have it
+        const newRecentTrip = trips[0]
+        console.log('📸 Route snapshot URL:', newRecentTrip.route_snapshot_url)
+        
+        // If the new trip doesn't have a snapshot but we already have one for this trip, keep it
+        if (!newRecentTrip.route_snapshot_url && recentTrip?.id === newRecentTrip.id && recentTrip.route_snapshot_url) {
+          console.log('♻️ Preserving existing snapshot URL:', recentTrip.route_snapshot_url)
+          newRecentTrip.route_snapshot_url = recentTrip.route_snapshot_url
+        }
+        
+        setRecentTrip(newRecentTrip)
 
         console.log("✅ [StatsActivity] Stats calculated:", {
           trips: trips.length,

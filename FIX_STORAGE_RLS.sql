@@ -62,34 +62,17 @@ SET public = true
 WHERE id = 'recaps';
 
 -- =====================================================
--- VERIFICATION
+-- VERIFICATION (run these separately if needed)
 -- =====================================================
--- Run these queries to verify the policies are working:
 
--- 1. Check bucket is public
-SELECT id, name, public FROM storage.buckets WHERE id = 'recaps';
--- Should show: public = true
+-- Check bucket is public
+-- SELECT id, name, public FROM storage.buckets WHERE id = 'recaps';
 
--- 2. Check policies exist
-SELECT 
-  policyname,
-  cmd,
-  permissive,
-  CASE 
-    WHEN cmd = 'SELECT' THEN 'READ'
-    WHEN cmd = 'INSERT' THEN 'UPLOAD'
-    WHEN cmd = 'UPDATE' THEN 'UPDATE'
-    WHEN cmd = 'DELETE' THEN 'DELETE'
-  END as operation
-FROM storage.policies 
-WHERE bucket_id = 'recaps'
-ORDER BY cmd;
+-- Check policies exist  
+-- SELECT policyname, cmd FROM pg_policies WHERE tablename = 'objects' AND schemaname = 'storage';
 
--- 3. Test read access (should return files)
-SELECT name, created_at 
-FROM storage.objects 
-WHERE bucket_id = 'recaps' 
-LIMIT 5;
+-- Test read access
+-- SELECT name, created_at FROM storage.objects WHERE bucket_id = 'recaps' LIMIT 5;
 
 -- =====================================================
 -- EXPLANATION
