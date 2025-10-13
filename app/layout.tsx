@@ -1,0 +1,51 @@
+import type React from "react"
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import { Orbitron } from "next/font/google"
+import { Share_Tech_Mono } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
+import { Suspense } from "react"
+import { AuthProvider } from "@/contexts/AuthContext"
+import "./globals.css"
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  display: "swap",
+})
+
+const orbitron = Orbitron({
+  subsets: ["latin"],
+  variable: "--font-heading",
+  display: "swap",
+})
+
+const shareTechMono = Share_Tech_Mono({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-mono",
+  display: "swap",
+})
+
+export const metadata: Metadata = {
+  title: "SpeedX Mission Control",
+  description: "Formula 1 Telemetry Command Center",
+  generator: "v0.app",
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en" className={`${inter.variable} ${orbitron.variable} ${shareTechMono.variable}`}>
+      <body className="font-sans antialiased">
+        <AuthProvider>
+          <Suspense fallback={null}>{children}</Suspense>
+        </AuthProvider>
+        <Analytics />
+      </body>
+    </html>
+  )
+}
