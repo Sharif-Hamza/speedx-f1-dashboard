@@ -13,7 +13,7 @@ interface CarPosition {
 
 export function MapPanel() {
   const [cars, setCars] = useState<CarPosition[]>([
-    { id: 1, x: 20, y: 30, color: "bg-red-600", driver: "VER" },
+    { id: 1, x: 20, y: 30, color: "bg-[#00FF7F]", driver: "VER" },
     { id: 2, x: 15, y: 45, color: "bg-blue-600", driver: "HAM" },
     { id: 3, x: 25, y: 60, color: "bg-orange-600", driver: "NOR" },
     { id: 4, x: 40, y: 25, color: "bg-green-600", driver: "LEC" },

@@ -10,7 +10,7 @@ interface MonitorPanelProps {
 
 function MonitorPanelComponent({ title, indicator = "green", children, variant = "secondary" }: MonitorPanelProps) {
   const indicatorColors = {
-    red: "bg-[#E10600] shadow-[0_0_8px_rgba(225,6,0,0.6)]",
+    red: "bg-[#00FF7F] shadow-[0_0_8px_rgba(225,6,0,0.6)]",
     green: "bg-[#00FF7F] shadow-[0_0_8px_rgba(0,255,127,0.6)]",
     yellow: "bg-[#FFB300] shadow-[0_0_8px_rgba(255,179,0,0.6)]",
     cyan: "bg-[#00E5FF] shadow-[0_0_8px_rgba(0,229,255,0.6)]",

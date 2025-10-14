@@ -47,7 +47,7 @@ export default function PendingPage() {
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         {loading ? (
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#E10600]" />
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00FF7F]" />
         ) : (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -62,7 +62,7 @@ export default function PendingPage() {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="mb-8 inline-block"
           >
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#E10600] to-[#8B0000] flex items-center justify-center shadow-2xl border-4 border-[#E10600]/20 mx-auto">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#00FF7F] to-[#8B0000] flex items-center justify-center shadow-2xl border-4 border-[#00FF7F]/20 mx-auto">
               <svg className="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
@@ -159,7 +159,7 @@ export default function PendingPage() {
           >
             <button
               onClick={() => checkWaitlistStatus()}
-              className="px-6 py-2 bg-[#E10600] hover:bg-[#FF3131] text-white rounded-xl transition-colors"
+              className="px-6 py-2 bg-[#00FF7F] hover:bg-[#FF3131] text-white rounded-xl transition-colors"
             >
               Check Status
             </button>

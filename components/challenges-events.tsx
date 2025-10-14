@@ -80,11 +80,11 @@ export function ChallengesEvents() {
           <span className="text-yellow-500">🏆</span>
           CHALLENGES & EVENTS
           <div
-            className={`h-2 w-2 rounded-full bg-red-600 transition-opacity ${ledBlink ? "opacity-100" : "opacity-0"}`}
+            className={`h-2 w-2 rounded-full bg-[#00FF7F] transition-opacity ${ledBlink ? "opacity-100" : "opacity-0"}`}
           />
         </div>
       }
-      indicator="red"
+      indicator="green"
     >
       <div className="bg-zinc-950 rounded border border-zinc-700 p-2">
         <div className="grid md:grid-cols-2 gap-2">
@@ -93,7 +93,7 @@ export function ChallengesEvents() {
             <div className="text-xs font-bold text-yellow-500 tracking-wider">WEEKLY BLITZ — BEAT THE MAP</div>
 
             <div>
-              <div className="text-3xl font-bold text-red-600 mb-1">2,500</div>
+              <div className="text-3xl font-bold text-[#00FF7F] mb-1">2,500</div>
               <div className="text-xs text-zinc-500">Prize Points</div>
             </div>
 
@@ -104,29 +104,29 @@ export function ChallengesEvents() {
                 <span>68%</span>
               </div>
               <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
-                <div className="h-full bg-red-600 rounded-full" style={{ width: "68%" }} />
+                <div className="h-full bg-[#00FF7F] rounded-full" style={{ width: "68%" }} />
               </div>
             </div>
 
             {/* Bullet list */}
             <ul className="space-y-2 text-sm text-zinc-300">
               <li className="flex items-start gap-2">
-                <span className="text-red-600 mt-1">•</span>
+                <span className="text-[#00FF7F] mt-1">•</span>
                 <span>Select destination → Drive</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-red-600 mt-1">•</span>
+                <span className="text-[#00FF7F] mt-1">•</span>
                 <span>Compare Actual vs Expected</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-red-600 mt-1">•</span>
+                <span className="text-[#00FF7F] mt-1">•</span>
                 <span>Share your delta</span>
               </li>
             </ul>
 
             {/* CTA buttons */}
             <div className="flex gap-2 pt-2">
-              <button className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded transition-colors">
+              <button className="flex-1 px-4 py-2 bg-[#00FF7F] hover:bg-[#10B981] text-white text-sm font-bold rounded transition-colors">
                 Join Challenge
               </button>
               <button className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-bold rounded transition-colors border border-zinc-700">
@@ -155,7 +155,7 @@ export function ChallengesEvents() {
                     <div className="text-xs text-zinc-500 font-mono">{formatCountdown(countdowns[index])}</div>
                   </div>
                   <svg
-                    className="h-5 w-5 text-zinc-600 group-hover:text-red-600 transition-colors flex-shrink-0"
+                    className="h-5 w-5 text-zinc-600 group-hover:text-[#00FF7F] transition-colors flex-shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"

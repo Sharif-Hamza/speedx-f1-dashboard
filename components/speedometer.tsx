@@ -48,7 +48,7 @@ export function Speedometer() {
 
           <div className="w-full mt-4 md:mt-6 h-4 md:h-3 bg-[#0D0D0D] rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#00FF7F] via-[#FFB300] to-[#E10600] transition-all duration-100"
+              className="h-full bg-gradient-to-r from-[#00FF7F] via-[#FFB300] to-[#00FF7F] transition-all duration-100"
               style={{ width: `${(speed / 350) * 100}%` }}
             />
           </div>
@@ -63,7 +63,7 @@ export function Speedometer() {
               <div className="text-[#9E9E9E] text-[10px] md:text-xs font-[family-name:var(--font-heading)] tracking-wide">
                 TOP SPEED
               </div>
-              <div className="font-bold text-[#E10600] font-[family-name:var(--font-mono)] text-sm md:text-base">
+              <div className="font-bold text-[#00FF7F] font-[family-name:var(--font-mono)] text-sm md:text-base">
                 342 KM/H
               </div>
             </div>
@@ -88,7 +88,7 @@ export function Speedometer() {
               {speedDistribution.map((data, i) => (
                 <div
                   key={i}
-                  className="flex-1 bg-gradient-to-t from-[#E10600] to-[#FF3131] rounded-t"
+                  className="flex-1 bg-gradient-to-t from-[#00FF7F] to-[#FF3131] rounded-t"
                   style={{ height: `${(data.speed / 350) * 100}%`, borderRadius: "4px 4px 0 0" }}
                 />
               ))}
@@ -114,7 +114,7 @@ export function Speedometer() {
               {speedDistribution.map((data, i) => (
                 <div
                   key={i}
-                  className="flex-1 bg-gradient-to-t from-[#E10600] to-[#FF3131] rounded-t transition-all hover:opacity-80 cursor-pointer relative group"
+                  className="flex-1 bg-gradient-to-t from-[#00FF7F] to-[#FF3131] rounded-t transition-all hover:opacity-80 cursor-pointer relative group"
                   style={{ height: `${(data.speed / 350) * 100}%`, borderRadius: "8px 8px 0 0" }}
                 >
                   <div
@@ -135,7 +135,7 @@ export function Speedometer() {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-0 md:flex md:justify-center md:gap-2">
               <div className="text-center">
                 <div className="text-[#9E9E9E] mb-0.5">Peak Accel</div>
-                <div className="text-[#E10600] font-bold">2.7 G</div>
+                <div className="text-[#00FF7F] font-bold">2.7 G</div>
               </div>
               <div className="text-center">
                 <div className="text-[#9E9E9E] mb-0.5">Avg Segment</div>

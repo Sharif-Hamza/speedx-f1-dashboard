@@ -76,7 +76,7 @@ export default function MissionControl() {
     return (
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E10600] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00FF7F] mx-auto mb-4"></div>
           <p className="text-[#9E9E9E]">Loading dashboard...</p>
         </div>
       </div>
@@ -85,12 +85,12 @@ export default function MissionControl() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-[#F5F5F5] font-sans vignette grain pb-20 md:pb-0" style={{ scrollBehavior: "smooth" }}>
-      <header className="sticky top-0 z-50 border-b-2 border-[#E10600] bg-gradient-to-r from-black via-[#0D0D0D] to-black p-3 md:p-4 overflow-hidden">
+      <header className="sticky top-0 z-50 border-b-2 border-[#00FF7F] bg-gradient-to-r from-black via-[#0D0D0D] to-black p-3 md:p-4 overflow-hidden">
         <div className="motion-streak" />
         <div className="relative flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-4">
             <div
-              className="text-xl md:text-3xl font-bold text-[#E10600] font-[family-name:var(--font-heading)] tracking-tight animate-logo-pulse"
+              className="text-xl md:text-3xl font-bold text-[#00FF7F] font-[family-name:var(--font-heading)] tracking-tight animate-logo-pulse"
               style={{ letterSpacing: "0.05em" }}
             >
               SPEED<span className="text-[#F5F5F5]">X</span>
@@ -102,14 +102,14 @@ export default function MissionControl() {
           </div>
           <div className="flex items-center gap-3 md:gap-6">
             <div className="hidden sm:flex items-center gap-2">
-              <svg className="h-4 w-4 md:h-5 md:w-5 text-[#E10600]" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="h-4 w-4 md:h-5 md:w-5 text-[#00FF7F]" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z" />
               </svg>
               <span className="text-xs md:text-sm text-[#9E9E9E]">3</span>
             </div>
             <button
               onClick={() => router.push("/profile")}
-              className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-[#0C0C0C] border-2 border-[#E10600] hover:border-[#00D9FF] flex items-center justify-center shadow-lg transition-all transform hover:scale-110 active:scale-95"
+              className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-[#0C0C0C] border-2 border-[#00FF7F] hover:border-[#00D9FF] flex items-center justify-center shadow-lg transition-all transform hover:scale-110 active:scale-95"
             >
               <svg className="h-5 w-5 md:h-6 md:w-6 text-[#F5F5F5]" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
@@ -152,7 +152,7 @@ export default function MissionControl() {
         </div>
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#0D0D0D] border-t-2 border-[#E10600] md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#0D0D0D] border-t-2 border-[#00FF7F] md:hidden">
         <div className="flex justify-around items-center py-2 px-2 overflow-x-auto scrollbar-hide">
           {[
             { id: "lobby", label: "Lobby", icon: "👥" },
@@ -167,7 +167,7 @@ export default function MissionControl() {
               key={section.id}
               onClick={() => scrollToSection(section.id)}
               className={`flex flex-col items-center gap-1 px-3 py-1 rounded transition-all touch-target ${
-                activeSection === section.id ? "text-[#E10600] bg-[#1A1A1A]" : "text-[#9E9E9E] hover:text-[#F5F5F5]"
+                activeSection === section.id ? "text-[#00FF7F] bg-[#1A1A1A]" : "text-[#9E9E9E] hover:text-[#F5F5F5]"
               }`}
               style={{ borderRadius: "8px" }}
             >

@@ -4,6 +4,7 @@ import { useState, useTransition } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
+import Link from "next/link"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -45,6 +46,17 @@ export default function LoginPage() {
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        {/* Go Back Button */}
+        <Link
+          href="/"
+          className="absolute top-8 left-8 inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-[#00FF7F] transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Home
+        </Link>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -59,7 +71,7 @@ export default function LoginPage() {
             className="text-center mb-8"
           >
             <div className="inline-flex items-center gap-3 mb-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#E10600] to-[#8B0000] flex items-center justify-center shadow-2xl border border-[#E10600]/20">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#00FF7F] to-[#8B0000] flex items-center justify-center shadow-2xl border border-[#00FF7F]/20">
                 <span className="text-3xl font-bold text-white font-[family-name:var(--font-heading)]">SX</span>
               </div>
             </div>
@@ -87,7 +99,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#E10600] focus:ring-1 focus:ring-[#E10600] transition-all"
+                  className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#00FF7F] focus:ring-1 focus:ring-[#00FF7F] transition-all"
                   placeholder="you@example.com"
                 />
               </div>
@@ -102,7 +114,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#E10600] focus:ring-1 focus:ring-[#E10600] transition-all"
+                  className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#00FF7F] focus:ring-1 focus:ring-[#00FF7F] transition-all"
                   placeholder="••••••••"
                 />
               </div>
@@ -111,7 +123,7 @@ export default function LoginPage() {
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm"
+                  className="p-3 bg-red-500/10 border border-[#00FF7F]/20 rounded-xl text-red-400 text-sm"
                 >
                   {error}
                 </motion.div>
@@ -122,7 +134,7 @@ export default function LoginPage() {
                 whileTap={{ scale: loading || isPending ? 1 : 0.98 }}
                 type="submit"
                 disabled={loading || isPending}
-                className="w-full py-4 bg-gradient-to-r from-[#E10600] to-[#FF3131] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-target font-[family-name:var(--font-heading)] relative overflow-hidden"
+                className="w-full py-4 bg-gradient-to-r from-[#00FF7F] to-[#FF3131] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-target font-[family-name:var(--font-heading)] relative overflow-hidden"
               >
                 {(loading || isPending) ? (
                   <span className="flex items-center justify-center gap-2">
@@ -141,7 +153,7 @@ export default function LoginPage() {
                 Don't have an account?{" "}
                 <button
                   onClick={() => router.push("/waitlist")}
-                  className="text-[#E10600] hover:text-[#FF3131] font-semibold transition-colors"
+                  className="text-[#00FF7F] hover:text-[#FF3131] font-semibold transition-colors"
                 >
                   Join the waitlist
                 </button>

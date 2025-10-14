@@ -67,7 +67,7 @@ export function LapTimer() {
               style={{ letterSpacing: "-0.02em" }}
             >
               {minutes}:{seconds.toString().padStart(2, "0")}
-              <span className="text-lg md:text-2xl text-[#E10600]">.{milliseconds.toString().padStart(3, "0")}</span>
+              <span className="text-lg md:text-2xl text-[#00FF7F]">.{milliseconds.toString().padStart(3, "0")}</span>
             </div>
 
             <div className="w-full mt-4 md:mt-6">
@@ -84,7 +84,7 @@ export function LapTimer() {
               </div>
               <div className="h-3 md:h-2 bg-[#0D0D0D] rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-[#E10600] transition-all duration-100"
+                  className="h-full bg-[#00FF7F] transition-all duration-100"
                   style={{ width: `${(time / 90) * 100}%` }}
                 />
               </div>
@@ -120,14 +120,14 @@ export function LapTimer() {
                 <div className="flex justify-between text-[9px] md:text-[10px] text-[#9E9E9E] mb-1 font-[family-name:var(--font-heading)]">
                   <span>CURRENT</span>
                   <span
-                    className="px-2 py-0.5 bg-[#E10600]/20 text-[#E10600] rounded font-bold font-[family-name:var(--font-mono)]"
+                    className="px-2 py-0.5 bg-[#00FF7F]/20 text-[#00FF7F] rounded font-bold font-[family-name:var(--font-mono)]"
                     style={{ borderRadius: "8px" }}
                   >
                     +0.432s
                   </span>
                 </div>
                 <div className="h-3 md:h-4 bg-[#0D0D0D] rounded overflow-hidden" style={{ borderRadius: "8px" }}>
-                  <div className="h-full bg-[#E10600] rounded" style={{ width: "98.5%", borderRadius: "8px" }} />
+                  <div className="h-full bg-[#00FF7F] rounded" style={{ width: "98.5%", borderRadius: "8px" }} />
                 </div>
               </div>
 
@@ -153,7 +153,7 @@ export function LapTimer() {
                   <span className="text-[#F5F5F5] font-bold">32.015</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#E10600] animate-pulse-led" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00FF7F] animate-pulse-led" />
                   <span className="text-[#9E9E9E]">S2:</span>
                   <span className="text-[#F5F5F5] font-bold">27.912</span>
                 </div>
@@ -169,7 +169,7 @@ export function LapTimer() {
       </MonitorPanel>
 
       {showStickyTimer && (
-        <div className="fixed top-14 left-0 right-0 z-40 bg-[#0D0D0D] border-b-2 border-[#E10600] p-2 md:hidden shadow-lg">
+        <div className="fixed top-14 left-0 right-0 z-40 bg-[#0D0D0D] border-b-2 border-[#00FF7F] p-2 md:hidden shadow-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-xs text-[#9E9E9E] font-[family-name:var(--font-heading)]">LAP {lap}</span>
@@ -182,14 +182,14 @@ export function LapTimer() {
                 const element = document.getElementById("lap")
                 element?.scrollIntoView({ behavior: "smooth" })
               }}
-              className="text-xs text-[#E10600] font-bold"
+              className="text-xs text-[#00FF7F] font-bold"
             >
               VIEW
             </button>
           </div>
           <div className="h-1 bg-[#1A1A1A] rounded-full overflow-hidden mt-1">
             <div
-              className="h-full bg-[#E10600] transition-all duration-100"
+              className="h-full bg-[#00FF7F] transition-all duration-100"
               style={{ width: `${(time / 90) * 100}%` }}
             />
           </div>

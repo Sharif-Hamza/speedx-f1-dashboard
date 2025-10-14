@@ -31,7 +31,7 @@ export function RPMGauge() {
   const rotation = (rpm / 15000) * 270 - 135
 
   return (
-    <MonitorPanel title="ENGINE RPM" indicator="red">
+    <MonitorPanel title="ENGINE RPM" indicator="green">
       <div className="bg-zinc-950 rounded border border-zinc-700 p-6 flex flex-col items-center justify-center">
         <div className="relative w-48 h-48">
           {/* Gauge background */}
@@ -98,7 +98,7 @@ export function RPMGauge() {
           </svg>
         </div>
         <div className="text-center mt-4">
-          <div className="text-4xl font-bold text-red-600">{Math.round(rpm)}</div>
+          <div className="text-4xl font-bold text-[#00FF7F]">{Math.round(rpm)}</div>
           <div className="text-xs text-zinc-500">RPM</div>
         </div>
       </div>

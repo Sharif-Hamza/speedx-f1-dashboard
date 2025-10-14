@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useAuth } from "@/contexts/AuthContext"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
+import Link from "next/link"
 
 export default function WaitlistPage() {
   const [email, setEmail] = useState("")
@@ -54,7 +55,7 @@ export default function WaitlistPage() {
             className="w-full max-w-md text-center"
           >
             <div className="bg-[#1A1A1A]/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-zinc-800/50">
-              <div className="w-20 h-20 bg-gradient-to-br from-[#E10600] to-[#8B0000] rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#00FF7F] to-[#8B0000] rounded-full flex items-center justify-center mx-auto mb-6">
                 <span className="text-4xl">📧</span>
               </div>
               <h2 className="text-2xl font-bold text-white mb-4 font-[family-name:var(--font-heading)]">
@@ -63,24 +64,24 @@ export default function WaitlistPage() {
               <p className="text-zinc-300 mb-2">
                 We've sent a verification link to:
               </p>
-              <p className="text-[#E10600] font-bold mb-6">{email}</p>
+              <p className="text-[#00FF7F] font-bold mb-6">{email}</p>
               <div className="bg-[#0D0D0D] border border-zinc-700 rounded-xl p-4 mb-6 text-left">
                 <h3 className="text-white font-semibold mb-2 text-sm">Next Steps:</h3>
                 <ol className="text-zinc-400 text-sm space-y-2">
                   <li className="flex items-start gap-2">
-                    <span className="text-[#E10600] font-bold">1.</span>
+                    <span className="text-[#00FF7F] font-bold">1.</span>
                     <span>Check your email inbox</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#E10600] font-bold">2.</span>
+                    <span className="text-[#00FF7F] font-bold">2.</span>
                     <span>Click the verification link</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#E10600] font-bold">3.</span>
+                    <span className="text-[#00FF7F] font-bold">3.</span>
                     <span>Wait for admin approval</span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-[#E10600] font-bold">4.</span>
+                    <span className="text-[#00FF7F] font-bold">4.</span>
                     <span>Login once approved!</span>
                   </li>
                 </ol>
@@ -90,7 +91,7 @@ export default function WaitlistPage() {
               </p>
               <button
                 onClick={() => setShowEmailVerification(false)}
-                className="mt-4 text-[#E10600] hover:text-[#FF3131] text-sm font-semibold"
+                className="mt-4 text-[#00FF7F] hover:text-[#FF3131] text-sm font-semibold"
               >
                 ← Back to waitlist
               </button>
@@ -117,7 +118,7 @@ export default function WaitlistPage() {
           {[...Array(9)].map((_, i) => (
             <div
               key={i}
-              className="aspect-square bg-gradient-to-br from-[#E10600] to-[#8B0000] rounded-lg animate-pulse"
+              className="aspect-square bg-gradient-to-br from-[#00FF7F] to-[#8B0000] rounded-lg animate-pulse"
               style={{ animationDelay: `${i * 200}ms` }}
             />
           ))}
@@ -126,6 +127,17 @@ export default function WaitlistPage() {
 
       {/* Content */}
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        {/* Go Back Button */}
+        <Link
+          href="/"
+          className="absolute top-8 left-8 inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-[#00FF7F] transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Home
+        </Link>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -140,12 +152,12 @@ export default function WaitlistPage() {
             className="text-center mb-8"
           >
             <div className="inline-flex items-center gap-3 mb-4">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#E10600] to-[#8B0000] flex items-center justify-center shadow-2xl border border-[#E10600]/20">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#00FF7F] to-[#8B0000] flex items-center justify-center shadow-2xl border border-[#00FF7F]/20">
                 <span className="text-3xl font-bold text-white font-[family-name:var(--font-heading)]">SX</span>
               </div>
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 font-[family-name:var(--font-heading)] tracking-tight">
-              SPEED<span className="text-[#E10600]">X</span>
+              SPEED<span className="text-[#00FF7F]">X</span>
             </h1>
             <p className="text-zinc-400 text-sm">Track. Drive. Compete.</p>
           </motion.div>
@@ -178,7 +190,7 @@ export default function WaitlistPage() {
                   onChange={(e) => setUsername(e.target.value)}
                   required
                   pattern="[a-zA-Z0-9_]{3,20}"
-                  className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#E10600] focus:ring-1 focus:ring-[#E10600] transition-all"
+                  className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#00FF7F] focus:ring-1 focus:ring-[#00FF7F] transition-all"
                   placeholder="johndoe123"
                 />
                 <p className="text-xs text-zinc-500 mt-1">3-20 characters, letters, numbers, and underscores only</p>
@@ -194,7 +206,7 @@ export default function WaitlistPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#E10600] focus:ring-1 focus:ring-[#E10600] transition-all"
+                  className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#00FF7F] focus:ring-1 focus:ring-[#00FF7F] transition-all"
                   placeholder="you@example.com"
                 />
               </div>
@@ -210,7 +222,7 @@ export default function WaitlistPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#E10600] focus:ring-1 focus:ring-[#E10600] transition-all"
+                  className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#00FF7F] focus:ring-1 focus:ring-[#00FF7F] transition-all"
                   placeholder="••••••••"
                 />
                 <p className="text-xs text-zinc-500 mt-1">Minimum 6 characters</p>
@@ -220,7 +232,7 @@ export default function WaitlistPage() {
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm"
+                  className="p-3 bg-red-500/10 border border-[#00FF7F]/20 rounded-xl text-red-400 text-sm"
                 >
                   {error}
                 </motion.div>
@@ -231,7 +243,7 @@ export default function WaitlistPage() {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={loading}
-                className="w-full py-4 bg-gradient-to-r from-[#E10600] to-[#FF3131] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-target font-[family-name:var(--font-heading)]"
+                className="w-full py-4 bg-gradient-to-r from-[#00FF7F] to-[#FF3131] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-target font-[family-name:var(--font-heading)]"
               >
                 {loading ? "Joining..." : "Join Waitlist"}
               </motion.button>
@@ -242,7 +254,7 @@ export default function WaitlistPage() {
                 Already a user?{" "}
                 <button
                   onClick={() => router.push("/login")}
-                  className="text-[#E10600] hover:text-[#FF3131] font-semibold transition-colors"
+                  className="text-[#00FF7F] hover:text-[#FF3131] font-semibold transition-colors"
                 >
                   Log in
                 </button>

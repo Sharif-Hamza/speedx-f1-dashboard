@@ -219,7 +219,7 @@ export function MaxSpeedLeaderboard() {
   return (
     <MonitorPanel 
       title="MAX SPEED LEADERBOARD"
-      indicator="yellow"
+      indicator="green"
       variant="primary"
     >
       <div className="bg-[#0C0C0C] rounded border border-[#222] overflow-hidden flex flex-col" style={{ borderRadius: "8px", maxHeight: "500px" }}>
@@ -228,7 +228,7 @@ export function MaxSpeedLeaderboard() {
           <button
             onClick={() => setViewMode("alltime")}
             className={`flex-1 px-3 py-2 text-xs font-bold rounded transition-all ${
-              viewMode === "alltime" ? "bg-[#E10600] text-[#F5F5F5]" : "bg-[#1A1A1A] text-[#9E9E9E] hover:bg-[#222]"
+              viewMode === "alltime" ? "bg-[#00FF7F] text-[#F5F5F5]" : "bg-[#1A1A1A] text-[#9E9E9E] hover:bg-[#222]"
             }`}
             style={{ borderRadius: "8px" }}
           >
@@ -237,7 +237,7 @@ export function MaxSpeedLeaderboard() {
           <button
             onClick={() => setViewMode("weekly")}
             className={`flex-1 px-3 py-2 text-xs font-bold rounded transition-all ${
-              viewMode === "weekly" ? "bg-[#E10600] text-[#F5F5F5]" : "bg-[#1A1A1A] text-[#9E9E9E] hover:bg-[#222]"
+              viewMode === "weekly" ? "bg-[#00FF7F] text-[#F5F5F5]" : "bg-[#1A1A1A] text-[#9E9E9E] hover:bg-[#222]"
             }`}
             style={{ borderRadius: "8px" }}
           >
@@ -285,13 +285,13 @@ export function MaxSpeedLeaderboard() {
                 <tr
                   key={entry.user_id}
                   className={`border-b border-[#1A1A1A] hover:bg-[#0D0D0D] transition-colors ${
-                    idx === 0 ? "bg-[#E10600]/10" : ""
+                    idx === 0 ? "bg-[#00FF7F]/10" : ""
                   } ${entry.is_current_user ? "bg-[#FFB300]/10" : ""}`}
                 >
                   <td className="p-2 md:p-3">
                     <span
                       className={`font-bold text-xs md:text-sm font-[family-name:var(--font-mono)] ${
-                        idx === 0 ? "text-[#E10600]" : entry.is_current_user ? "text-[#FFB300]" : "text-[#F5F5F5]"
+                        idx === 0 ? "text-[#00FF7F]" : entry.is_current_user ? "text-[#FFB300]" : "text-[#F5F5F5]"
                       }`}
                     >
                       {entry.position}
@@ -321,7 +321,7 @@ export function MaxSpeedLeaderboard() {
                       </span>
                     )}
                     {entry.change < 0 && (
-                      <span className="text-[#E10600] text-[10px] md:text-xs font-bold font-[family-name:var(--font-mono)]">
+                      <span className="text-[#00FF7F] text-[10px] md:text-xs font-bold font-[family-name:var(--font-mono)]">
                         ▼{Math.abs(entry.change)}
                       </span>
                     )}

@@ -53,7 +53,7 @@ export function TelemetryPanel() {
         {/* Legend */}
         <div className="absolute top-2 right-2 flex gap-4 text-xs">
           <div className="flex items-center gap-1">
-            <div className="h-2 w-2 bg-red-600 rounded-full" />
+            <div className="h-2 w-2 bg-[#00FF7F] rounded-full" />
             <span>SPEED</span>
           </div>
           <div className="flex items-center gap-1">
@@ -65,7 +65,7 @@ export function TelemetryPanel() {
         {/* Values */}
         <div className="absolute bottom-2 left-2 text-xs text-zinc-400">
           <div>
-            SPEED: <span className="text-red-600 font-bold">{Math.round(data[data.length - 1] * 3.5)} KM/H</span>
+            SPEED: <span className="text-[#00FF7F] font-bold">{Math.round(data[data.length - 1] * 3.5)} KM/H</span>
           </div>
           <div>
             G-FORCE: <span className="text-green-500 font-bold">{(data[data.length - 1] * 0.05).toFixed(2)}G</span>

@@ -415,7 +415,7 @@ export function StatsActivity() {
                           <div className="text-[10px] text-[#9E9E9E] font-[family-name:var(--font-heading)] tracking-wide mb-1">
                             MAX SPEED
                           </div>
-                          <div className="text-2xl font-bold text-[#E10600] font-[family-name:var(--font-mono)]">
+                          <div className="text-2xl font-bold text-[#00FF7F] font-[family-name:var(--font-mono)]">
                             {Math.round(stats.maxSpeed)}
                           </div>
                           <div className="text-[9px] text-[#9E9E9E]">MPH</div>
@@ -461,7 +461,7 @@ export function StatsActivity() {
                           </div>
                           <div className="h-2 bg-[#0D0D0D] rounded overflow-hidden">
                             <div 
-                              className="h-full bg-[#E10600]" 
+                              className="h-full bg-[#00FF7F]" 
                               style={{ width: `${(stats.blitzCompleted / stats.totalTrips) * 100}%` }}
                             />
                           </div>
@@ -552,7 +552,7 @@ export function StatsActivity() {
                       <div className="grid grid-cols-3 gap-2">
                         <div className="bg-[#0D0D0D] rounded p-2 border border-[#1A1A1A] text-center" style={{ borderRadius: "8px" }}>
                           <div className="text-[9px] text-[#9E9E9E] mb-1">MAX SPEED</div>
-                          <div className="text-lg font-bold text-[#E10600] font-[family-name:var(--font-mono)]">
+                          <div className="text-lg font-bold text-[#00FF7F] font-[family-name:var(--font-mono)]">
                             {Math.round(recentTrip.max_speed_mps * 2.23694)}
                           </div>
                           <div className="text-[8px] text-[#9E9E9E]">MPH</div>
@@ -649,7 +649,7 @@ export function StatsActivity() {
                             </span>
                           </div>
                           <div className="flex items-center gap-2 text-[10px]">
-                            <div className="w-2 h-2 rounded-full bg-[#E10600]"></div>
+                            <div className="w-2 h-2 rounded-full bg-[#00FF7F]"></div>
                             <span className="text-[#9E9E9E]">Ended:</span>
                             <span className="text-[#F5F5F5] font-[family-name:var(--font-mono)]">
                               {formatTime(recentTrip.ended_at)}

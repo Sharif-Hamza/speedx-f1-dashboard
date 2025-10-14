@@ -1,0 +1,13 @@
+📱 iPad Screenshots Folder
+
+Add your iPad-formatted SpeedX app screenshots here.
+
+Recommended specs:
+- Resolution: 2048 x 2732 pixels (iPad Pro 12.9")
+- Format: JPG, PNG, or WebP
+- Naming: ipad-screen-1.jpg, ipad-screen-2.jpg, etc.
+
+The iPad mockup will show the iOS SpeedX app on a larger screen.
+Images will automatically appear on the homepage once added.
+
+Simply drag and drop your iPad screenshots into this folder!

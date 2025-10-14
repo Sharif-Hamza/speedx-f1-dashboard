@@ -259,7 +259,7 @@ export function WeatherPanel() {
           <div className="grid grid-cols-2 gap-2 mb-3">
             <div className="bg-[#0D0D0D] border border-[#1A1A1A] rounded p-2" style={{ borderRadius: "6px" }}>
               <div className="text-[9px] text-[#9E9E9E] mb-1 font-[family-name:var(--font-heading)] tracking-wide">TRACK TEMP</div>
-              <div className="text-lg font-bold text-[#E10600] font-[family-name:var(--font-mono)]">
+              <div className="text-lg font-bold text-[#00FF7F] font-[family-name:var(--font-mono)]">
                 {trackTemp}°F
               </div>
             </div>
@@ -279,7 +279,7 @@ export function WeatherPanel() {
               <div className="text-[9px] text-[#9E9E9E] mb-1 font-[family-name:var(--font-heading)] tracking-wide">RAIN CHANCE</div>
               <div className={
                 "text-lg font-bold font-[family-name:var(--font-mono)] " +
-                ((weather?.rainChance || 0) > 50 ? "text-[#E10600]" :
+                ((weather?.rainChance || 0) > 50 ? "text-[#00FF7F]" :
                 (weather?.rainChance || 0) > 30 ? "text-yellow-500" :
                 "text-[#00FF7F]")
               }>
@@ -301,7 +301,7 @@ export function WeatherPanel() {
           </div>
 
           {/* Advice Box */}
-          <div className="bg-gradient-to-r from-[#E10600]/10 to-[#00D9FF]/10 border border-[#E10600]/30 rounded p-3" style={{ borderRadius: "8px" }}>
+          <div className="bg-gradient-to-r from-[#00FF7F]/10 to-[#00D9FF]/10 border border-[#00FF7F]/30 rounded p-3" style={{ borderRadius: "8px" }}>
             <div className="text-[9px] text-[#9E9E9E] mb-1 font-[family-name:var(--font-heading)] tracking-wide">📡 TRACK ADVISORY</div>
             <div className="text-xs text-[#F5F5F5] leading-relaxed font-[family-name:var(--font-mono)]">
               {getAdvice()}

@@ -24,7 +24,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!loading && !user && mounted) {
-      router.push("/waitlist")
+      router.push("/")
     }
   }, [user, loading, router, mounted])
 
@@ -85,7 +85,7 @@ export default function ProfilePage() {
     return (
       <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#E10600] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00FF7F] mx-auto mb-4"></div>
           <p className="text-[#9E9E9E]">Loading...</p>
         </div>
       </div>
@@ -95,7 +95,7 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-[#F5F5F5] font-sans vignette grain">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b-2 border-[#E10600] bg-gradient-to-r from-black via-[#0D0D0D] to-black p-4">
+      <header className="sticky top-0 z-50 border-b-2 border-[#00FF7F] bg-gradient-to-r from-black via-[#0D0D0D] to-black p-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <button
             onClick={() => router.push("/dashboard")}
@@ -106,7 +106,7 @@ export default function ProfilePage() {
             </svg>
             <span className="font-[family-name:var(--font-heading)] text-sm">Back to Dashboard</span>
           </button>
-          <div className="text-2xl font-bold text-[#E10600] font-[family-name:var(--font-heading)]">
+          <div className="text-2xl font-bold text-[#00FF7F] font-[family-name:var(--font-heading)]">
             SPEED<span className="text-[#F5F5F5]">X</span>
           </div>
         </div>
@@ -116,7 +116,7 @@ export default function ProfilePage() {
         {/* Profile Card */}
         <div className="bg-[#0C0C0C] rounded-lg border border-[#222] p-6">
           <div className="flex items-center gap-4 mb-6">
-            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-[#E10600] to-[#00D9FF] flex items-center justify-center shadow-lg">
+            <div className="h-20 w-20 rounded-full bg-gradient-to-br from-[#00FF7F] to-[#00D9FF] flex items-center justify-center shadow-lg">
               <svg className="h-10 w-10 text-[#F5F5F5]" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
               </svg>
@@ -134,12 +134,12 @@ export default function ProfilePage() {
           {/* Stats Grid */}
           {loadingStats ? (
             <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#E10600] mx-auto"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00FF7F] mx-auto"></div>
             </div>
           ) : stats ? (
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="bg-[#0D0D0D] border border-[#1A1A1A] rounded-lg p-4 text-center">
-                <div className="text-2xl font-bold text-[#E10600] font-[family-name:var(--font-mono)]">
+                <div className="text-2xl font-bold text-[#00FF7F] font-[family-name:var(--font-mono)]">
                   {stats.totalTrips}
                 </div>
                 <div className="text-xs text-[#9E9E9E] font-[family-name:var(--font-heading)] mt-1">
@@ -187,7 +187,7 @@ export default function ProfilePage() {
           {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="w-full bg-gradient-to-r from-[#E10600] to-[#B00500] hover:from-[#FF0700] hover:to-[#E10600] text-[#F5F5F5] font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg font-[family-name:var(--font-heading)] tracking-wide"
+            className="w-full bg-gradient-to-r from-[#00FF7F] to-[#B00500] hover:from-[#FF0700] hover:to-[#00FF7F] text-[#F5F5F5] font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg font-[family-name:var(--font-heading)] tracking-wide"
           >
             🚪 LOGOUT
           </button>
@@ -197,10 +197,10 @@ export default function ProfilePage() {
         <div className="grid grid-cols-2 gap-4">
           <button
             onClick={() => router.push("/dashboard")}
-            className="bg-[#0C0C0C] border border-[#222] hover:border-[#E10600] p-6 rounded-lg transition-all group"
+            className="bg-[#0C0C0C] border border-[#222] hover:border-[#00FF7F] p-6 rounded-lg transition-all group"
           >
             <div className="text-3xl mb-2">🏁</div>
-            <div className="text-sm font-bold text-[#F5F5F5] font-[family-name:var(--font-heading)] group-hover:text-[#E10600]">
+            <div className="text-sm font-bold text-[#F5F5F5] font-[family-name:var(--font-heading)] group-hover:text-[#00FF7F]">
               DASHBOARD
             </div>
           </button>

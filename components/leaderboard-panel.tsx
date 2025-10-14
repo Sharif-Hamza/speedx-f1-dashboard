@@ -59,7 +59,7 @@ export function LeaderboardPanel() {
                 className={`border-b border-zinc-800 hover:bg-zinc-900 transition-colors ${idx === 0 ? "bg-red-950/20" : ""}`}
               >
                 <td className="p-2">
-                  <span className={`font-bold text-xs md:text-sm ${idx === 0 ? "text-red-600" : "text-white"}`}>
+                  <span className={`font-bold text-xs md:text-sm ${idx === 0 ? "text-[#00FF7F]" : "text-white"}`}>
                     {driver.position}
                   </span>
                 </td>

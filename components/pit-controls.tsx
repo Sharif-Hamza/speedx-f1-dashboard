@@ -4,11 +4,11 @@ import { MonitorPanel } from "./monitor-panel"
 
 export function PitControls() {
   return (
-    <MonitorPanel title="PIT CONTROLS" indicator="red" variant="secondary">
+    <MonitorPanel title="PIT CONTROLS" indicator="green" variant="secondary">
       <div className="bg-[#0C0C0C] rounded border border-[#222] p-2 space-y-2" style={{ borderRadius: "8px" }}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           <button
-            className="bg-[#E10600] hover:bg-[#FF3131] text-[#F5F5F5] font-bold py-3 px-3 md:px-4 rounded border-2 border-[#8B0000] shadow-lg transition-all btn-pit-control uppercase text-xs md:text-sm flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 font-[family-name:var(--font-heading)]"
+            className="bg-[#00FF7F] hover:bg-[#FF3131] text-[#F5F5F5] font-bold py-3 px-3 md:px-4 rounded border-2 border-[#8B0000] shadow-lg transition-all btn-pit-control uppercase text-xs md:text-sm flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 font-[family-name:var(--font-heading)]"
             style={{ borderRadius: "8px" }}
           >
             <svg className="h-4 w-4 md:h-5 md:w-5" fill="currentColor" viewBox="0 0 20 20">
@@ -63,7 +63,7 @@ export function PitControls() {
         <div className="pt-3 border-t border-[#222] space-y-2 text-[10px] md:text-xs font-[family-name:var(--font-mono)]">
           <div className="flex justify-between items-center">
             <span className="text-[#9E9E9E]">TIRE COMPOUND</span>
-            <span className="font-bold text-[#E10600]">SOFT</span>
+            <span className="font-bold text-[#00FF7F]">SOFT</span>
           </div>
           <div className="flex justify-between items-center">
             <span className="text-[#9E9E9E]">FUEL LOAD</span>

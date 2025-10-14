@@ -1,0 +1,15 @@
+💻 Laptop/Dashboard Screenshots Folder
+
+Add your F1 Dashboard screenshots here.
+
+Recommended specs:
+- Resolution: 1920 x 1080 pixels (16:9 aspect ratio)
+- Format: JPG, PNG, or WebP
+- Naming: dashboard-1.jpg, dashboard-2.jpg, etc.
+
+The laptop mockup will show the SpeedX F1 Dashboard (web version).
+Take screenshots of the /dashboard page to showcase different features.
+
+Images will automatically appear on the homepage once added.
+
+Simply drag and drop your dashboard screenshots into this folder!

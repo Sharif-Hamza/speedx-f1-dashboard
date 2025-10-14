@@ -2,9 +2,11 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { Orbitron } from "next/font/google"
+import { Rajdhani } from "next/font/google"
 import { Share_Tech_Mono } from "next/font/google"
 import { Suspense } from "react"
 import { AuthProvider } from "@/contexts/AuthContext"
+import { ConditionalHeader } from "@/components/conditional-header"
 import "./globals.css"
 
 const inter = Inter({
@@ -16,6 +18,13 @@ const inter = Inter({
 const orbitron = Orbitron({
   subsets: ["latin"],
   variable: "--font-heading",
+  display: "swap",
+})
+
+const rajdhani = Rajdhani({
+  weight: ["600"],
+  subsets: ["latin"],
+  variable: "--font-rajdhani",
   display: "swap",
 })
 
@@ -38,9 +47,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${orbitron.variable} ${shareTechMono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${orbitron.variable} ${rajdhani.variable} ${shareTechMono.variable}`}>
       <body className="font-sans antialiased">
         <AuthProvider>
+          <ConditionalHeader />
           <Suspense fallback={null}>{children}</Suspense>
         </AuthProvider>
       </body>

@@ -129,7 +129,7 @@ export function SpeedStats() {
   const getGaugeColor = (speed: number) => {
     if (speed < 50) return "#00FF7F" // Green
     if (speed < 100) return "#FFB300" // Yellow
-    return "#E10600" // Red
+    return "#00FF7F" // Red
   }
 
   return (
@@ -181,7 +181,7 @@ export function SpeedStats() {
               <div className="text-sm md:text-base text-[#9E9E9E] font-[family-name:var(--font-mono)] mt-1">
                 MPH
               </div>
-              <div className="text-xs text-[#E10600] font-bold mt-2 font-[family-name:var(--font-heading)] tracking-wide">
+              <div className="text-xs text-[#00FF7F] font-bold mt-2 font-[family-name:var(--font-heading)] tracking-wide">
                 {loading ? "LOADING..." : "PERSONAL BEST"}
               </div>
             </div>
@@ -247,13 +247,13 @@ export function SpeedStats() {
             <div className="text-xs md:text-sm text-[#F5F5F5] font-[family-name:var(--font-mono)]">
               {loading ? "--" : Math.round(animatedSpeed)} MPH
             </div>
-            <div className="text-xs md:text-sm text-[#E10600] font-bold font-[family-name:var(--font-mono)]">
+            <div className="text-xs md:text-sm text-[#00FF7F] font-bold font-[family-name:var(--font-mono)]">
               {animatedSpeed < 50 ? "50 MPH" : animatedSpeed < 100 ? "100 MPH" : animatedSpeed < 150 ? "150 MPH" : "200 MPH"}
             </div>
           </div>
           <div className="w-full h-2 bg-[#0D0D0D] rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-[#00FF7F] via-[#FFB300] to-[#E10600] transition-all duration-500"
+              className="h-full bg-gradient-to-r from-[#00FF7F] via-[#FFB300] to-[#00FF7F] transition-all duration-500"
               style={{
                 width: `${
                   animatedSpeed < 50
@@ -280,7 +280,7 @@ export function SpeedStats() {
                 key={i}
                 className={`h-1.5 w-8 md:w-10 rounded-full transition-all ${
                   i < Math.floor(animatedSpeed / 40)
-                    ? "bg-[#E10600] shadow-[0_0_6px_#E10600]"
+                    ? "bg-[#00FF7F] shadow-[0_0_6px_#00FF7F]"
                     : "bg-[#222]"
                 }`}
               />

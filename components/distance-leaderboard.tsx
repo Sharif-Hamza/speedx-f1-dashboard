@@ -305,7 +305,7 @@ export function DistanceLeaderboard() {
                       </span>
                     )}
                     {entry.change < 0 && (
-                      <span className="text-[#E10600] text-[10px] md:text-xs font-bold font-[family-name:var(--font-mono)]">
+                      <span className="text-[#00FF7F] text-[10px] md:text-xs font-bold font-[family-name:var(--font-mono)]">
                         ▼{Math.abs(entry.change)}
                       </span>
                     )}

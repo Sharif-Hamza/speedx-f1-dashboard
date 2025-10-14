@@ -93,7 +93,7 @@ export function DriversLobby() {
         style={{ borderRadius: "8px" }}
       >
         <div className="text-center">
-          <div className="text-clamp-primary font-bold text-[#E10600] font-[family-name:var(--font-mono)]">
+          <div className="text-clamp-primary font-bold text-[#00FF7F] font-[family-name:var(--font-mono)]">
             {onlineCount}
           </div>
           <div className="text-xs md:text-sm text-[#9E9E9E] font-[family-name:var(--font-heading)] tracking-wide">
@@ -123,7 +123,7 @@ export function DriversLobby() {
           <input
             type="text"
             placeholder="Search drivers…"
-            className="hidden md:block flex-1 bg-[#0D0D0D] border border-[#333] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#E10600] transition-colors"
+            className="hidden md:block flex-1 bg-[#0D0D0D] border border-[#333] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#00FF7F] transition-colors"
             style={{ borderRadius: "8px" }}
           />
 
@@ -133,7 +133,7 @@ export function DriversLobby() {
                 key={f}
                 onClick={() => setFilter(f)}
                 className={`flex-1 md:flex-none md:px-3 py-2 text-xs font-bold rounded transition-all btn-pit-control touch-target ${
-                  filter === f ? "bg-[#E10600] text-[#F5F5F5]" : "bg-[#1A1A1A] text-[#9E9E9E] hover:bg-[#222]"
+                  filter === f ? "bg-[#00FF7F] text-[#F5F5F5]" : "bg-[#1A1A1A] text-[#9E9E9E] hover:bg-[#222]"
                 }`}
                 style={{ borderRadius: "8px" }}
               >
@@ -189,7 +189,7 @@ export function DriversLobby() {
       {searchOpen && (
         <div className="fixed inset-0 z-50 bg-[#0D0D0D] p-4 md:hidden">
           <div className="flex items-center gap-2 mb-4">
-            <button onClick={() => setSearchOpen(false)} className="text-[#E10600] touch-target">
+            <button onClick={() => setSearchOpen(false)} className="text-[#00FF7F] touch-target">
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -198,7 +198,7 @@ export function DriversLobby() {
               type="text"
               placeholder="Search drivers…"
               autoFocus
-              className="flex-1 bg-[#1A1A1A] border border-[#333] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#E10600] transition-colors"
+              className="flex-1 bg-[#1A1A1A] border border-[#333] rounded px-3 py-2 text-sm focus:outline-none focus:border-[#00FF7F] transition-colors"
               style={{ borderRadius: "8px" }}
             />
           </div>

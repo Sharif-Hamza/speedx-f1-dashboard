@@ -4,39 +4,40 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  /* SpeedX Dark Theme with Neon Green */
+  --background: #0a0a0a;
+  --foreground: #f1f1f1;
+  --card: #121212;
+  --card-foreground: #f1f1f1;
+  --popover: #121212;
+  --popover-foreground: #f1f1f1;
+  --primary: #00ff88;
+  --primary-foreground: #0a0a0a;
+  --secondary: #0d0d0d;
+  --secondary-foreground: #f1f1f1;
+  --muted: #0d0d0d;
+  --muted-foreground: #a0a0a0;
+  --accent: #00ff88;
+  --accent-foreground: #0a0a0a;
+  --destructive: #ff4444;
+  --destructive-foreground: #f1f1f1;
+  --border: #1f1f1f;
+  --input: #1f1f1f;
+  --ring: #00ff88;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.5rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 0.625rem;
+  --sidebar: #121212;
+  --sidebar-foreground: #f1f1f1;
+  --sidebar-primary: #00ff88;
+  --sidebar-primary-foreground: #0a0a0a;
+  --sidebar-accent: #0d0d0d;
+  --sidebar-accent-foreground: #f1f1f1;
+  --sidebar-border: #1f1f1f;
+  --sidebar-ring: #00ff88;
 }
 
 /* Updated theme with cinematic F1 color system and new fonts */
@@ -180,10 +181,10 @@
 @keyframes logoPulse {
   0%,
   100% {
-    filter: drop-shadow(0 0 8px rgba(225, 6, 0, 0.4));
+    filter: drop-shadow(0 0 8px rgba(0, 255, 127, 0.4));
   }
   50% {
-    filter: drop-shadow(0 0 16px rgba(225, 6, 0, 0.8));
+    filter: drop-shadow(0 0 16px rgba(0, 255, 127, 0.8));
   }
 }
 
@@ -210,10 +211,10 @@
   @keyframes logoPulse {
     0%,
     100% {
-      filter: drop-shadow(0 0 4px rgba(225, 6, 0, 0.3));
+      filter: drop-shadow(0 0 4px rgba(0, 255, 127, 0.3));
     }
     50% {
-      filter: drop-shadow(0 0 8px rgba(225, 6, 0, 0.6));
+      filter: drop-shadow(0 0 8px rgba(0, 255, 127, 0.6));
     }
   }
 }
@@ -295,7 +296,7 @@
 /* Panel depth and elevation */
 .panel-primary {
   background: linear-gradient(180deg, #141414 0%, #0d0d0d 100%);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 0 3px rgba(255, 255, 255, 0.05), inset 0 2px 0 rgba(225, 6, 0, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), inset 0 0 3px rgba(255, 255, 255, 0.05), inset 0 2px 0 rgba(0, 255, 127, 0.4);
 }
 
 .panel-secondary {
@@ -307,7 +308,7 @@
 @media (max-width: 768px) {
   .panel-primary {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4), inset 0 0 2px rgba(255, 255, 255, 0.05), inset 0 1px 0
-      rgba(225, 6, 0, 0.25);
+      rgba(0, 255, 127, 0.25);
   }
 
   .panel-secondary {
@@ -317,7 +318,7 @@
 
   /* Reduce rim light intensity on mobile */
   .glow-red {
-    box-shadow: 0 0 12px rgba(225, 6, 0, 0.3), inset 0 1px 0 rgba(225, 6, 0, 0.4);
+    box-shadow: 0 0 12px rgba(0, 255, 127, 0.3), inset 0 1px 0 rgba(0, 255, 127, 0.4);
   }
 
   .glow-green {
@@ -336,7 +337,7 @@
 }
 
 .btn-pit-control:hover {
-  box-shadow: 0 0 16px rgba(225, 6, 0, 0.6);
+  box-shadow: 0 0 16px rgba(0, 255, 127, 0.6);
 }
 
 .btn-pit-control:active {
@@ -353,9 +354,9 @@
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(225, 6, 0, 0.05) 20%,
-    rgba(255, 49, 49, 0.08) 50%,
-    rgba(225, 6, 0, 0.05) 80%,
+    rgba(0, 255, 127, 0.05) 20%,
+    rgba(0, 255, 127, 0.08) 50%,
+    rgba(0, 255, 127, 0.05) 80%,
     transparent 100%
   );
   opacity: 0.3;
@@ -404,5 +405,40 @@
 
   .animate-scroll {
     will-change: transform;
+  }
+
+  /* Landing page utilities */
+  .carbon-texture {
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.03) 2px,
+        rgba(255, 255, 255, 0.03) 4px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.02) 2px,
+        rgba(255, 255, 255, 0.02) 4px
+      );
+  }
+
+  .panel-glow {
+    box-shadow: inset 0 2px 0 rgba(0, 255, 136, 0.25), 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  .green-glow {
+    box-shadow: 0 0 24px rgba(0, 255, 136, 0.2);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Adding green-glow-hover utility class for hover effects */
+  .green-glow-hover:hover {
+    box-shadow: 0 0 24px rgba(0, 255, 136, 0.2);
   }
 }
