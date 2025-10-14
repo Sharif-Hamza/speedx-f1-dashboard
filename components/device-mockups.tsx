@@ -12,29 +12,25 @@ export function DeviceMockups() {
   const [currentLaptopIndex, setCurrentLaptopIndex] = useState(0)
 
   useEffect(() => {
-    // Fetch available images from each folder
-    async function loadImages() {
-      try {
-        // Load iPhone images
-        const iphoneRes = await fetch('/api/mockup-images?device=iphone')
-        const iphoneData = await iphoneRes.json()
-        setIphoneImages(iphoneData.images || [])
-
-        // Load iPad images
-        const ipadRes = await fetch('/api/mockup-images?device=ipad')
-        const ipadData = await ipadRes.json()
-        setIpadImages(ipadData.images || [])
-
-        // Load Laptop images
-        const laptopRes = await fetch('/api/mockup-images?device=laptop')
-        const laptopData = await laptopRes.json()
-        setLaptopImages(laptopData.images || [])
-      } catch (error) {
-        console.error('Error loading mockup images:', error)
-      }
-    }
-
-    loadImages()
+    // Directly set image paths - these files exist in public folder
+    const iphoneScreenshots = [
+      '/mockups/iphone/screen-1.jpg',
+      '/mockups/iphone/screen-2.jpg',
+      '/mockups/iphone/screen-3.jpg',
+      '/mockups/iphone/screen-4.jpg',
+      '/mockups/iphone/screen-5.jpg',
+      '/mockups/iphone/screen-6.jpg',
+    ]
+    
+    // Check for laptop screenshots (you need to add these)
+    const laptopScreenshots = [
+      '/mockups/laptop/Screenshot 2025-10-14 at 1.07.57\u202fAM.png',
+    ]
+    
+    setIphoneImages(iphoneScreenshots)
+    setLaptopImages(laptopScreenshots)
+    // iPad images can be added later
+    setIpadImages([])
   }, [])
 
   // Auto-rotate images every 4 seconds
