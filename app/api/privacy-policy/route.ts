@@ -3,9 +3,11 @@ import { supabase } from '@/lib/supabase'
 
 export async function GET() {
   try {
-    console.log('Fetching privacy policy from Supabase...')
-    console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'NOT SET')
-    console.log('Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'NOT SET')
+    console.log('=== Privacy Policy API Called ===')
+    console.log('Server-side Supabase URL:', process.env.SUPABASE_URL ? 'Set' : 'NOT SET')
+    console.log('Server-side Supabase Key:', process.env.SUPABASE_ANON_KEY ? 'Set' : 'NOT SET')
+    console.log('Client-side Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'NOT SET')
+    console.log('Client-side Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'NOT SET')
     
     const { data, error } = await supabase
       .from('privacy_policy')

@@ -62,9 +62,3 @@
   for = "/dashboard"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-
-# Redirects for Next.js API routes
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
