@@ -1,9 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { MonitorPanel } from "./monitor-panel"
 import { supabase } from "@/lib/supabase"
 import { useAuth } from "@/contexts/AuthContext"
+import { getCurrentWeekBoundaries, getLastWeekBoundaries } from "@/lib/timezone-utils"
 
 interface LeaderboardEntry {
   position: number
@@ -19,19 +20,21 @@ export function MaxSpeedLeaderboard() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<"weekly" | "alltime">("weekly")
+  const requestIdRef = useRef(0)
 
   // Fetch leaderboard data
   const fetchLeaderboard = async () => {
+    const requestId = ++requestIdRef.current
+    
     try {
       console.log("🏁 [MaxSpeedLeaderboard] Fetching leaderboard data for mode:", viewMode)
       
-      // Calculate start of current week (Sunday at midnight)
-      const now = new Date()
-      const startOfWeek = new Date(now)
-      startOfWeek.setDate(now.getDate() - now.getDay()) // Go back to Sunday
-      startOfWeek.setHours(0, 0, 0, 0)
+      // Calculate start of current week (Sunday at midnight EST)
+      const currentWeek = getCurrentWeekBoundaries()
+      const startOfWeek = currentWeek.startUTC
       
-      console.log("📅 [MaxSpeedLeaderboard] Week starts:", startOfWeek.toISOString())
+      console.log("📅 [MaxSpeedLeaderboard] Week starts (EST-based):", startOfWeek.toISOString())
+      console.log("📅 [MaxSpeedLeaderboard] Week date range:", currentWeek.startDateStr, "to", currentWeek.endDateStr)
       
       // Get all users with their max speed from trips
       // First, get max speed per user
@@ -134,35 +137,84 @@ export function MaxSpeedLeaderboard() {
       
       console.log(`🏆 [MaxSpeedLeaderboard] Top 10:`, entries.map(e => `${e.position}. ${e.username} - ${Math.round(e.max_speed_mph)} mph`))
 
-      // Calculate position changes from last week's snapshot
-      const lastWeekStart = new Date(startOfWeek)
-      lastWeekStart.setDate(lastWeekStart.getDate() - 7)
-      const lastWeekStartDate = lastWeekStart.toISOString().split('T')[0]
+      // Calculate position changes from last week (EST-based)
+      const lastWeek = getLastWeekBoundaries()
+      const lastWeekStart = lastWeek.startUTC
+      const lastWeekEnd = lastWeek.endUTC
+      const lastWeekStartDate = lastWeek.startDateStr
       
-      console.log(`📊 [MaxSpeedLeaderboard] Fetching last week positions from:`, lastWeekStartDate)
+      console.log(`📊 [MaxSpeedLeaderboard] Calculating CHG from last week (EST): ${lastWeek.startDateStr} to ${lastWeek.endDateStr}`)
       
-      // Fetch last week's positions from database
-      const { data: lastWeekData, error: lastWeekError } = await supabase
+      // Try to fetch from snapshot first (faster)
+      const { data: snapshotData, error: snapshotError } = await supabase
         .from('weekly_leaderboard_snapshots')
         .select('user_id, position')
         .eq('week_start', lastWeekStartDate)
         .eq('leaderboard_type', 'max_speed')
       
-      if (lastWeekError) {
-        console.warn('⚠️ [MaxSpeedLeaderboard] Could not fetch last week positions:', lastWeekError)
+      let lastWeekPositions: Record<string, number> = {}
+      
+      if (snapshotData && snapshotData.length > 0) {
+        // Use snapshot data (preferred method)
+        console.log(`✅ [MaxSpeedLeaderboard] Found ${snapshotData.length} snapshot entries from last week`)
+        snapshotData.forEach(record => {
+          const position = Number(record.position)
+          if (Number.isFinite(position)) {
+            lastWeekPositions[record.user_id] = position
+          }
+        })
+      } else {
+        // Fallback: Calculate from actual trip data
+        console.log(`🔄 [MaxSpeedLeaderboard] No snapshot found, calculating from trip data...`)
+        
+        try {
+          // Get last week's trips
+          const { data: lastWeekTrips, error: tripsError } = await supabase
+            .from("trips")
+            .select(`
+              user_id,
+              max_speed_mps,
+              started_at
+            `)
+            .gte("started_at", lastWeekStart.toISOString())
+            .lte("started_at", lastWeekEnd.toISOString())
+            .order("max_speed_mps", { ascending: false })
+          
+          if (tripsError) {
+            console.warn('⚠️ [MaxSpeedLeaderboard] Could not fetch last week trips:', tripsError)
+          } else if (lastWeekTrips && lastWeekTrips.length > 0) {
+            // Group by user and get max speed
+            const userMaxSpeeds = lastWeekTrips.reduce((acc, trip) => {
+              if (!acc[trip.user_id] || trip.max_speed_mps > acc[trip.user_id]) {
+                acc[trip.user_id] = trip.max_speed_mps
+              }
+              return acc
+            }, {} as Record<string, number>)
+            
+            // Sort and assign positions
+            const sortedUsers = Object.entries(userMaxSpeeds)
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 100) // Top 100
+            
+            sortedUsers.forEach(([userId], index) => {
+              lastWeekPositions[userId] = index + 1
+            })
+            
+            console.log(`✅ [MaxSpeedLeaderboard] Calculated ${sortedUsers.length} positions from trip data`)
+          } else {
+            console.log(`ℹ️ [MaxSpeedLeaderboard] No trips found for last week`)
+          }
+        } catch (calcError) {
+          console.error('❌ [MaxSpeedLeaderboard] Error calculating from trips:', calcError)
+        }
       }
       
-      const lastWeekPositions: Record<string, number> = {}
-      lastWeekData?.forEach(record => {
-        lastWeekPositions[record.user_id] = record.position
-      })
-      
-      console.log(`📈 [MaxSpeedLeaderboard] Last week positions:`, lastWeekPositions)
+      console.log(`📈 [MaxSpeedLeaderboard] Last week positions:`, Object.keys(lastWeekPositions).length, 'users')
 
       // Calculate position changes
       entries.forEach((entry) => {
         const lastPosition = lastWeekPositions[entry.user_id]
-        if (lastPosition) {
+        if (lastPosition !== undefined) {
           entry.change = lastPosition - entry.position // Positive = moved up
           console.log(`  ${entry.username}: was #${lastPosition}, now #${entry.position}, CHG: ${entry.change > 0 ? '+' : ''}${entry.change}`)
         } else {
@@ -171,12 +223,19 @@ export function MaxSpeedLeaderboard() {
         }
       })
 
-      setLeaderboard(entries)
-      console.log("✅ [MaxSpeedLeaderboard] Leaderboard updated successfully")
+      // Only update state if this is still the latest request
+      if (requestId === requestIdRef.current) {
+        setLeaderboard(entries)
+        console.log("✅ [MaxSpeedLeaderboard] Leaderboard updated successfully")
+      } else {
+        console.log("⏭️ [MaxSpeedLeaderboard] Skipping stale request", requestId)
+      }
     } catch (error) {
       console.error("❌ [MaxSpeedLeaderboard] Error fetching leaderboard:", error)
     } finally {
-      setLoading(false)
+      if (requestId === requestIdRef.current) {
+        setLoading(false)
+      }
     }
   }
 
@@ -321,7 +380,7 @@ export function MaxSpeedLeaderboard() {
                       </span>
                     )}
                     {entry.change < 0 && (
-                      <span className="text-[#00FF7F] text-[10px] md:text-xs font-bold font-[family-name:var(--font-mono)]">
+                      <span className="text-[#FF5555] text-[10px] md:text-xs font-bold font-[family-name:var(--font-mono)]">
                         ▼{Math.abs(entry.change)}
                       </span>
                     )}
@@ -342,7 +401,7 @@ export function MaxSpeedLeaderboard() {
           <div className="bg-[#0D0D0D] border-t border-[#222] p-2 text-center">
             <div className="text-[10px] text-[#9E9E9E] font-[family-name:var(--font-mono)]">
               {viewMode === "weekly" 
-                ? "🔄 Resets every Sunday • Top 10 this week"
+                ? "🔄 Resets every Sunday at 12:00 AM EST • Top 10 this week"
                 : "👑 Top 10 fastest of all time"}
             </div>
           </div>

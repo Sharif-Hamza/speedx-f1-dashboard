@@ -1,9 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { MonitorPanel } from "./monitor-panel"
 import { supabase } from "@/lib/supabase"
 import { useAuth } from "@/contexts/AuthContext"
+import { getCurrentWeekBoundaries, getLastWeekBoundaries } from "@/lib/timezone-utils"
 
 interface LeaderboardEntry {
   position: number
@@ -19,19 +20,21 @@ export function DistanceLeaderboard() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<"weekly" | "alltime">("weekly")
+  const requestIdRef = useRef(0)
 
   // Fetch leaderboard data
   const fetchLeaderboard = async () => {
+    const requestId = ++requestIdRef.current
+    
     try {
       console.log("🏎️ [DistanceLeaderboard] Fetching leaderboard data for mode:", viewMode)
       
-      // Calculate start of current week (Sunday at midnight)
-      const now = new Date()
-      const startOfWeek = new Date(now)
-      startOfWeek.setDate(now.getDate() - now.getDay()) // Go back to Sunday
-      startOfWeek.setHours(0, 0, 0, 0)
+      // Calculate start of current week (Sunday at midnight EST)
+      const currentWeek = getCurrentWeekBoundaries()
+      const startOfWeek = currentWeek.startUTC
       
-      console.log("📅 [DistanceLeaderboard] Week starts:", startOfWeek.toISOString())
+      console.log("📅 [DistanceLeaderboard] Week starts (EST-based):", startOfWeek.toISOString())
+      console.log("📅 [DistanceLeaderboard] Week date range:", currentWeek.startDateStr, "to", currentWeek.endDateStr)
       
       // Get total distance per user from trips
       let query = supabase
@@ -119,35 +122,84 @@ export function DistanceLeaderboard() {
         entry.position = index + 1
       })
 
-      // Calculate position changes from last week's snapshot
-      const lastWeekStart = new Date(startOfWeek)
-      lastWeekStart.setDate(lastWeekStart.getDate() - 7)
-      const lastWeekStartDate = lastWeekStart.toISOString().split('T')[0]
+      // Calculate position changes from last week (EST-based)
+      const lastWeek = getLastWeekBoundaries()
+      const lastWeekStart = lastWeek.startUTC
+      const lastWeekEnd = lastWeek.endUTC
+      const lastWeekStartDate = lastWeek.startDateStr
       
-      console.log(`📊 [DistanceLeaderboard] Fetching last week positions from:`, lastWeekStartDate)
+      console.log(`📊 [DistanceLeaderboard] Calculating CHG from last week (EST): ${lastWeek.startDateStr} to ${lastWeek.endDateStr}`)
       
-      // Fetch last week's positions from database
-      const { data: lastWeekData, error: lastWeekError } = await supabase
+      // Try to fetch from snapshot first (faster)
+      const { data: snapshotData, error: snapshotError } = await supabase
         .from('weekly_leaderboard_snapshots')
         .select('user_id, position')
         .eq('week_start', lastWeekStartDate)
         .eq('leaderboard_type', 'distance')
       
-      if (lastWeekError) {
-        console.warn('⚠️ [DistanceLeaderboard] Could not fetch last week positions:', lastWeekError)
+      let lastWeekPositions: Record<string, number> = {}
+      
+      if (snapshotData && snapshotData.length > 0) {
+        // Use snapshot data (preferred method)
+        console.log(`✅ [DistanceLeaderboard] Found ${snapshotData.length} snapshot entries from last week`)
+        snapshotData.forEach(record => {
+          const position = Number(record.position)
+          if (Number.isFinite(position)) {
+            lastWeekPositions[record.user_id] = position
+          }
+        })
+      } else {
+        // Fallback: Calculate from actual trip data
+        console.log(`🔄 [DistanceLeaderboard] No snapshot found, calculating from trip data...`)
+        
+        try {
+          // Get last week's trips
+          const { data: lastWeekTrips, error: tripsError } = await supabase
+            .from("trips")
+            .select(`
+              user_id,
+              distance_m,
+              started_at
+            `)
+            .gte("started_at", lastWeekStart.toISOString())
+            .lte("started_at", lastWeekEnd.toISOString())
+          
+          if (tripsError) {
+            console.warn('⚠️ [DistanceLeaderboard] Could not fetch last week trips:', tripsError)
+          } else if (lastWeekTrips && lastWeekTrips.length > 0) {
+            // Group by user and sum distances
+            const userTotalDistances = lastWeekTrips.reduce((acc, trip) => {
+              if (!acc[trip.user_id]) {
+                acc[trip.user_id] = 0
+              }
+              acc[trip.user_id] += trip.distance_m
+              return acc
+            }, {} as Record<string, number>)
+            
+            // Sort and assign positions
+            const sortedUsers = Object.entries(userTotalDistances)
+              .sort((a, b) => b[1] - a[1])
+              .slice(0, 100) // Top 100
+            
+            sortedUsers.forEach(([userId], index) => {
+              lastWeekPositions[userId] = index + 1
+            })
+            
+            console.log(`✅ [DistanceLeaderboard] Calculated ${sortedUsers.length} positions from trip data`)
+          } else {
+            console.log(`ℹ️ [DistanceLeaderboard] No trips found for last week`)
+          }
+        } catch (calcError) {
+          console.error('❌ [DistanceLeaderboard] Error calculating from trips:', calcError)
+        }
       }
       
-      const lastWeekPositions: Record<string, number> = {}
-      lastWeekData?.forEach(record => {
-        lastWeekPositions[record.user_id] = record.position
-      })
-      
-      console.log(`📈 [DistanceLeaderboard] Last week positions:`, lastWeekPositions)
+      console.log(`📈 [DistanceLeaderboard] Last week positions:`, Object.keys(lastWeekPositions).length, 'users')
 
       // Calculate position changes
       entries.forEach((entry) => {
         const lastPosition = lastWeekPositions[entry.user_id]
-        if (lastPosition) {
+        if (lastPosition !== undefined) {
           entry.change = lastPosition - entry.position // Positive = moved up
           console.log(`  ${entry.username}: was #${lastPosition}, now #${entry.position}, CHG: ${entry.change > 0 ? '+' : ''}${entry.change}`)
         } else {
@@ -156,11 +208,19 @@ export function DistanceLeaderboard() {
         }
       })
 
-      setLeaderboard(entries)
+      // Only update state if this is still the latest request
+      if (requestId === requestIdRef.current) {
+        setLeaderboard(entries)
+        console.log("✅ [DistanceLeaderboard] Leaderboard updated successfully")
+      } else {
+        console.log("⏭️ [DistanceLeaderboard] Skipping stale request", requestId)
+      }
     } catch (error) {
-      console.error("Error fetching distance leaderboard:", error)
+      console.error("❌ [DistanceLeaderboard] Error fetching leaderboard:", error)
     } finally {
-      setLoading(false)
+      if (requestId === requestIdRef.current) {
+        setLoading(false)
+      }
     }
   }
 
@@ -305,7 +365,7 @@ export function DistanceLeaderboard() {
                       </span>
                     )}
                     {entry.change < 0 && (
-                      <span className="text-[#00FF7F] text-[10px] md:text-xs font-bold font-[family-name:var(--font-mono)]">
+                      <span className="text-[#FF5555] text-[10px] md:text-xs font-bold font-[family-name:var(--font-mono)]">
                         ▼{Math.abs(entry.change)}
                       </span>
                     )}
@@ -326,7 +386,7 @@ export function DistanceLeaderboard() {
           <div className="bg-[#0D0D0D] border-t border-[#222] p-2 text-center">
             <div className="text-[10px] text-[#9E9E9E] font-[family-name:var(--font-mono)]">
               {viewMode === "weekly" 
-                ? "🔄 Resets every Sunday • Top 10 this week"
+                ? "🔄 Resets every Sunday at 12:00 AM EST • Top 10 this week"
                 : "🌍 Top 10 road warriors of all time"}
             </div>
           </div>
