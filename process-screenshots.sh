@@ -13,8 +13,15 @@ mkdir -p public/screenshots
 # Check if ImageMagick is installed
 if ! command -v magick &> /dev/null && ! command -v convert &> /dev/null
 then
-    echo "❌ ImageMagick not found. Installing via Homebrew..."
-    brew install imagemagick
+    echo "⚠️  ImageMagick not found."
+    # Check if screenshots already exist (they're committed to git)
+    if [ -f "public/screenshots/screen-1.jpg" ]; then
+        echo "✅ Using existing processed screenshots from git"
+        exit 0
+    else
+        echo "❌ No ImageMagick and no existing screenshots. Cannot process."
+        exit 1
+    fi
 fi
 
 # iPhone 16 Pro dimensions
