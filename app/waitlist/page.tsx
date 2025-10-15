@@ -1,10 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/AuthContext"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
 import Link from "next/link"
+
+// Railway production URL
+const EMAIL_AUTH_SERVICE_URL = 'https://speedx-email-auth-production.up.railway.app/api'
 
 export default function WaitlistPage() {
   const [email, setEmail] = useState("")
@@ -13,31 +16,82 @@ export default function WaitlistPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [showEmailVerification, setShowEmailVerification] = useState(false)
+  const [showConfirmedMessage, setShowConfirmedMessage] = useState(false)
+  const [confirmedEmail, setConfirmedEmail] = useState("")
+  const [resendingEmail, setResendingEmail] = useState(false)
   const { signUp } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Check if user was redirected after email confirmation
+  useEffect(() => {
+    const confirmed = searchParams.get('confirmed')
+    const confirmedEmailParam = searchParams.get('email')
+    
+    if (confirmed === 'true' && confirmedEmailParam) {
+      setConfirmedEmail(confirmedEmailParam)
+      setShowConfirmedMessage(true)
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError("")
     
-    // Validate username (alphanumeric and underscore only)
-    if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
-      setError("Username must be 3-20 characters and contain only letters, numbers, and underscores")
+    // Validate password length
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters")
       setLoading(false)
       return
     }
 
-    const { error: signUpError, needsEmailVerification } = await signUp(email, password, username) as any
+    try {
+      // Call email auth service
+      const response = await fetch(`${EMAIL_AUTH_SERVICE_URL}/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
 
-    if (signUpError) {
-      setError(signUpError.message)
+      const data = await response.json()
+
+      if (response.ok) {
+        setShowEmailVerification(true)
+        setLoading(false)
+      } else {
+        setError(data.error || 'Signup failed. Please try again.')
+        setLoading(false)
+      }
+    } catch (err) {
+      setError('Network error. Please check your connection and try again.')
       setLoading(false)
-    } else if (needsEmailVerification) {
-      setShowEmailVerification(true)
-      setLoading(false)
-    } else {
-      router.push("/pending")
+    }
+  }
+
+  const handleResendEmail = async () => {
+    setResendingEmail(true)
+    setError("")
+
+    try {
+      const response = await fetch(`${EMAIL_AUTH_SERVICE_URL}/resend`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      })
+
+      const data = await response.json()
+      
+      if (response.ok) {
+        setError("") // Clear any errors
+        alert(data.message || 'Confirmation email sent!')
+      } else {
+        setError(data.error || 'Failed to resend email.')
+      }
+    } catch (err) {
+      setError('Network error. Please try again.')
+    } finally {
+      setResendingEmail(false)
     }
   }
 
@@ -86,9 +140,16 @@ export default function WaitlistPage() {
                   </li>
                 </ol>
               </div>
-              <p className="text-xs text-zinc-500">
-                Didn't receive the email? Check your spam folder or try again.
+              <p className="text-xs text-zinc-500 mb-4">
+                Didn't receive the email? Check your spam folder.
               </p>
+              <button
+                onClick={handleResendEmail}
+                disabled={resendingEmail}
+                className="w-full py-3 bg-gradient-to-r from-[#00FF7F]/20 to-[#FF3131]/20 border border-[#00FF7F]/30 text-white font-semibold rounded-xl hover:border-[#00FF7F] transition-all disabled:opacity-50"
+              >
+                {resendingEmail ? 'Sending...' : '🔄 Resend Confirmation Email'}
+              </button>
               <button
                 onClick={() => setShowEmailVerification(false)}
                 className="mt-4 text-[#00FF7F] hover:text-[#FF3131] text-sm font-semibold"
