@@ -2,15 +2,17 @@
 
 import { useState, useEffect } from "react"
 import { MonitorPanel } from "./monitor-panel"
-import Image from "next/image"
+
+// Cache-busting timestamp
+const CACHE_BUST = Date.now()
 
 const SCREENSHOTS = [
-  "/screenshots/screen-1.jpg",
-  "/screenshots/screen-2.jpg",
-  "/screenshots/screen-3.jpg",
-  "/screenshots/screen-4.jpg",
-  "/screenshots/screen-5.jpg",
-  "/screenshots/screen-6.jpg",
+  `/screenshots/screen-1.jpg?v=${CACHE_BUST}`,
+  `/screenshots/screen-2.jpg?v=${CACHE_BUST}`,
+  `/screenshots/screen-3.jpg?v=${CACHE_BUST}`,
+  `/screenshots/screen-4.jpg?v=${CACHE_BUST}`,
+  `/screenshots/screen-5.jpg?v=${CACHE_BUST}`,
+  `/screenshots/screen-6.jpg?v=${CACHE_BUST}`,
 ]
 
 export function AppPromo() {
@@ -116,12 +118,10 @@ export function AppPromo() {
                             : direction === 'right' ? 'translate-x-full opacity-0 z-0' : '-translate-x-full opacity-0 z-0'
                         }`}
                       >
-                        <Image
+                        <img
                           src={screenshot}
                           alt={`SpeedX App Screenshot ${index + 1}`}
-                          fill
-                          className="object-cover"
-                          priority={index === 0}
+                          className="w-full h-full object-cover"
                         />
                       </div>
                     ))}
@@ -257,12 +257,10 @@ export function AppPromo() {
                                 : direction === 'right' ? 'translate-x-full opacity-0 z-0' : '-translate-x-full opacity-0 z-0'
                             }`}
                           >
-                            <Image
+                            <img
                               src={screenshot}
                               alt={`SpeedX App Screenshot ${index + 1}`}
-                              fill
-                              className="object-cover"
-                              priority={index === 0}
+                              className="w-full h-full object-cover"
                             />
                           </div>
                         ))}

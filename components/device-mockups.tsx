@@ -3,6 +3,9 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
+// Cache-busting timestamp
+const CACHE_BUST = Date.now()
+
 export function DeviceMockups() {
   const [iphoneImages, setIphoneImages] = useState<string[]>([])
   const [ipadImages, setIpadImages] = useState<string[]>([])
@@ -12,17 +15,17 @@ export function DeviceMockups() {
   const [currentLaptopIndex, setCurrentLaptopIndex] = useState(0)
 
   useEffect(() => {
-    // Directly set image paths - these files exist in public folder
+    // Use the new processed screenshots with cache-busting
     const iphoneScreenshots = [
-      '/mockups/iphone/screen-1.jpg',
-      '/mockups/iphone/screen-2.jpg',
-      '/mockups/iphone/screen-3.jpg',
-      '/mockups/iphone/screen-4.jpg',
-      '/mockups/iphone/screen-5.jpg',
-      '/mockups/iphone/screen-6.jpg',
+      `/screenshots/screen-1.jpg?v=${CACHE_BUST}`,
+      `/screenshots/screen-2.jpg?v=${CACHE_BUST}`,
+      `/screenshots/screen-3.jpg?v=${CACHE_BUST}`,
+      `/screenshots/screen-4.jpg?v=${CACHE_BUST}`,
+      `/screenshots/screen-5.jpg?v=${CACHE_BUST}`,
+      `/screenshots/screen-6.jpg?v=${CACHE_BUST}`,
     ]
     
-    // Check for laptop screenshots (you need to add these)
+    // Laptop screenshot (keep the same)
     const laptopScreenshots = [
       '/mockups/laptop/Screenshot 2025-10-14 at 1.07.57\u202fAM.png',
     ]
@@ -97,12 +100,10 @@ export function DeviceMockups() {
                 
                 {/* Screen */}
                 <div className="absolute inset-[8px] sm:inset-[9px] lg:inset-[10px] bg-black rounded-[1.8rem] sm:rounded-[2rem] lg:rounded-[2.2rem] overflow-hidden">
-                  <Image
+                  <img
                     src={iphoneImages[currentIphoneIndex]}
                     alt="SpeedX App"
-                    fill
-                    className="object-cover"
-                    priority
+                    className="w-full h-full object-cover"
                   />
                 </div>
 
