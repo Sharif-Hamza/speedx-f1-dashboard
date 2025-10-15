@@ -46,12 +46,26 @@ export default function WaitlistPage() {
       return
     }
 
+    // Validate username
+    if (!username || username.length < 3) {
+      setError("Username must be at least 3 characters")
+      setLoading(false)
+      return
+    }
+
     try {
       // Call email auth service
       const response = await fetch(`${EMAIL_AUTH_SERVICE_URL}/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ 
+          email, 
+          password,
+          metadata: {
+            full_name: username,
+            username: username
+          }
+        })
       })
 
       const data = await response.json()
