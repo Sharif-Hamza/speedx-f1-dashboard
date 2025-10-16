@@ -217,7 +217,7 @@ export default function WaitlistPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="w-full max-w-md"
+          className="w-full max-w-7xl"
         >
           {/* Logo */}
           <motion.div
@@ -237,24 +237,113 @@ export default function WaitlistPage() {
             <p className="text-zinc-400 text-sm">Track. Drive. Compete.</p>
           </motion.div>
 
-          {/* Waitlist Card */}
+          {/* Two Column Layout */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.5 }}
-            className="bg-[#1A1A1A]/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-zinc-800/50"
+            className="grid lg:grid-cols-2 gap-6 lg:gap-8"
           >
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-white mb-2 font-[family-name:var(--font-heading)]">
-                Join the Waitlist
-              </h2>
-              <p className="text-zinc-400 text-sm">
-                Be among the first to experience high-speed trip tracking
-              </p>
+            {/* LEFT SIDE - FORM */}
+            <div className="bg-[#1A1A1A]/80 backdrop-blur-xl rounded-3xl p-6 lg:p-8 shadow-2xl border border-zinc-800/50 h-fit lg:sticky lg:top-8">
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold text-white mb-2 font-[family-name:var(--font-heading)]">
+                  Join the Waitlist
+                </h2>
+                <p className="text-zinc-400 text-sm">
+                  Be among the first to experience high-speed trip tracking
+                </p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label htmlFor="username" className="block text-sm font-medium text-zinc-300 mb-2">
+                    Username
+                  </label>
+                  <input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    pattern="[a-zA-Z0-9_]{3,20}"
+                    className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#00FF7F] focus:ring-1 focus:ring-[#00FF7F] transition-all"
+                    placeholder="johndoe123"
+                  />
+                  <p className="text-xs text-zinc-500 mt-1">3-20 characters, letters, numbers, and underscores only</p>
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-2">
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#00FF7F] focus:ring-1 focus:ring-[#00FF7F] transition-all"
+                    placeholder="you@example.com"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-zinc-300 mb-2">
+                    Password
+                  </label>
+                  <input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    minLength={6}
+                    className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#00FF7F] focus:ring-1 focus:ring-[#00FF7F] transition-all"
+                    placeholder="••••••••"
+                  />
+                  <p className="text-xs text-zinc-500 mt-1">Minimum 6 characters</p>
+                </div>
+
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-3 bg-red-500/10 border border-[#00FF7F]/20 rounded-xl text-red-400 text-sm"
+                  >
+                    {error}
+                  </motion.div>
+                )}
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-4 bg-gradient-to-r from-[#00FF7F] to-[#FF3131] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-target font-[family-name:var(--font-heading)]"
+                >
+                  {loading ? "Joining..." : "Join Waitlist"}
+                </motion.button>
+              </form>
+
+              <div className="mt-6 pt-6 border-t border-zinc-800">
+                <p className="text-center text-sm text-zinc-400">
+                  Already a user?{" "}
+                  <button
+                    onClick={() => router.push("/login")}
+                    className="text-[#00FF7F] hover:text-[#FF3131] font-semibold transition-colors"
+                  >
+                    Log in
+                  </button>
+                </p>
+              </div>
             </div>
 
-            {/* Why Join the Waitlist */}
-            <div className="mb-6 p-4 bg-gradient-to-br from-[#00FF7F]/5 to-[#FF3131]/5 border border-[#00FF7F]/20 rounded-xl">
+            {/* RIGHT SIDE - EXPLANATIONS */}
+            <div className="space-y-6">
+
+              {/* Why Join the Waitlist */}
+              <div className="p-4 bg-gradient-to-br from-[#00FF7F]/5 to-[#FF3131]/5 border border-[#00FF7F]/20 rounded-xl bg-[#1A1A1A]/80 backdrop-blur-xl">
               <h3 className="text-white font-semibold mb-3 text-sm flex items-center gap-2">
                 <span className="text-[#00FF7F]">🚀</span>
                 Why Join the SpeedX Waitlist?
@@ -289,10 +378,10 @@ export default function WaitlistPage() {
                   <p className="text-zinc-400">Lifetime access to core features - completely free for early adopters</p>
                 </div>
               </div>
-            </div>
+              </div>
 
-            {/* Waitlist Process Explanation */}
-            <div className="mb-6 p-4 bg-[#0D0D0D]/80 border border-zinc-700/50 rounded-xl">
+              {/* Waitlist Process Explanation */}
+              <div className="p-4 bg-[#1A1A1A]/80 backdrop-blur-xl border border-zinc-700/50 rounded-xl">
               <h3 className="text-white font-semibold mb-3 text-sm flex items-center gap-2">
                 <span className="text-[#00FF7F]">📋</span>
                 How the Waitlist Works
@@ -357,10 +446,10 @@ export default function WaitlistPage() {
                   </div>
                 </div>
               </div>
-            </div>
+              </div>
 
-            {/* What to Expect */}
-            <div className="mb-6 p-4 bg-[#0D0D0D]/60 border border-zinc-700/30 rounded-xl">
+              {/* What to Expect */}
+              <div className="p-4 bg-[#1A1A1A]/80 backdrop-blur-xl border border-zinc-700/30 rounded-xl">
               <h3 className="text-white font-semibold mb-3 text-sm flex items-center gap-2">
                 <span className="text-[#FF3131]">⚡</span>
                 What You'll Get Access To
@@ -391,89 +480,7 @@ export default function WaitlistPage() {
                   <span>Achievement system</span>
                 </div>
               </div>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="username" className="block text-sm font-medium text-zinc-300 mb-2">
-                  Username
-                </label>
-                <input
-                  id="username"
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                  pattern="[a-zA-Z0-9_]{3,20}"
-                  className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#00FF7F] focus:ring-1 focus:ring-[#00FF7F] transition-all"
-                  placeholder="johndoe123"
-                />
-                <p className="text-xs text-zinc-500 mt-1">3-20 characters, letters, numbers, and underscores only</p>
               </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-2">
-                  Email
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#00FF7F] focus:ring-1 focus:ring-[#00FF7F] transition-all"
-                  placeholder="you@example.com"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-zinc-300 mb-2">
-                  Password
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                  className="w-full px-4 py-3 bg-[#0D0D0D] border border-zinc-700 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-[#00FF7F] focus:ring-1 focus:ring-[#00FF7F] transition-all"
-                  placeholder="••••••••"
-                />
-                <p className="text-xs text-zinc-500 mt-1">Minimum 6 characters</p>
-              </div>
-
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-3 bg-red-500/10 border border-[#00FF7F]/20 rounded-xl text-red-400 text-sm"
-                >
-                  {error}
-                </motion.div>
-              )}
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                disabled={loading}
-                className="w-full py-4 bg-gradient-to-r from-[#00FF7F] to-[#FF3131] text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed touch-target font-[family-name:var(--font-heading)]"
-              >
-                {loading ? "Joining..." : "Join Waitlist"}
-              </motion.button>
-            </form>
-
-            <div className="mt-6 pt-6 border-t border-zinc-800">
-              <p className="text-center text-sm text-zinc-400">
-                Already a user?{" "}
-                <button
-                  onClick={() => router.push("/login")}
-                  className="text-[#00FF7F] hover:text-[#FF3131] font-semibold transition-colors"
-                >
-                  Log in
-                </button>
-              </p>
             </div>
           </motion.div>
 
