@@ -67,7 +67,7 @@ export function UserPointsFeed() {
         time_delta_seconds,
         distance_meters,
         created_at,
-        profiles:user_id (
+        profiles!blitz_points_user_id_fkey (
           username
         )
       `)

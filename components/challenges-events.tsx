@@ -166,7 +166,7 @@ export function ChallengesEvents() {
       .select(`
         user_id,
         points,
-        profiles:user_id (
+        profiles!blitz_points_user_id_fkey (
           username
         )
       `)
