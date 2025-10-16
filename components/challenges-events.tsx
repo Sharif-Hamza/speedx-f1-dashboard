@@ -188,9 +188,9 @@ export function ChallengesEvents() {
       // Get unique user IDs - convert to lowercase for matching
       const userIds = Array.from(userTotals.keys()).map(id => id.toLowerCase())
       
-      // Fetch usernames - get all columns to see what's available
+      // Fetch usernames from user_profiles table
       const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
+        .from('user_profiles')
         .select('*')
         .in('id', userIds)
       

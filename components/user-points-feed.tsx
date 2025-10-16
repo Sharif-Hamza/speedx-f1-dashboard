@@ -73,9 +73,9 @@ export function UserPointsFeed() {
       // Get unique user IDs - convert to lowercase for matching
       const userIds = [...new Set(pointsData.map(p => p.user_id.toLowerCase()))]
       
-      // Fetch usernames - get all columns to see what's available
+      // Fetch usernames from user_profiles table
       const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
+        .from('user_profiles')
         .select('*')
         .in('id', userIds)
       
