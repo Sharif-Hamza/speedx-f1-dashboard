@@ -253,6 +253,146 @@ export default function WaitlistPage() {
               </p>
             </div>
 
+            {/* Why Join the Waitlist */}
+            <div className="mb-6 p-4 bg-gradient-to-br from-[#00FF7F]/5 to-[#FF3131]/5 border border-[#00FF7F]/20 rounded-xl">
+              <h3 className="text-white font-semibold mb-3 text-sm flex items-center gap-2">
+                <span className="text-[#00FF7F]">🚀</span>
+                Why Join the SpeedX Waitlist?
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="bg-[#0D0D0D]/50 p-3 rounded-lg border border-zinc-700/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[#00FF7F]">🏁</span>
+                    <span className="text-white font-medium">Early Access</span>
+                  </div>
+                  <p className="text-zinc-400">Be among the first to experience next-gen trip tracking and racing features</p>
+                </div>
+                <div className="bg-[#0D0D0D]/50 p-3 rounded-lg border border-zinc-700/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[#00FF7F]">🎯</span>
+                    <span className="text-white font-medium">Exclusive Features</span>
+                  </div>
+                  <p className="text-zinc-400">Get access to beta features and influence product development</p>
+                </div>
+                <div className="bg-[#0D0D0D]/50 p-3 rounded-lg border border-zinc-700/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[#00FF7F]">👑</span>
+                    <span className="text-white font-medium">Founder Status</span>
+                  </div>
+                  <p className="text-zinc-400">Get a special "Founder" badge on your profile and priority support</p>
+                </div>
+                <div className="bg-[#0D0D0D]/50 p-3 rounded-lg border border-zinc-700/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[#00FF7F]">🔥</span>
+                    <span className="text-white font-medium">No Fees</span>
+                  </div>
+                  <p className="text-zinc-400">Lifetime access to core features - completely free for early adopters</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Waitlist Process Explanation */}
+            <div className="mb-6 p-4 bg-[#0D0D0D]/80 border border-zinc-700/50 rounded-xl">
+              <h3 className="text-white font-semibold mb-3 text-sm flex items-center gap-2">
+                <span className="text-[#00FF7F]">📋</span>
+                How the Waitlist Works
+              </h3>
+              <div className="space-y-3 text-xs">
+                <div className="flex gap-3">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[#00FF7F]/10 border border-[#00FF7F]/30 flex items-center justify-center text-[#00FF7F] font-bold">
+                    1
+                  </div>
+                  <div>
+                    <p className="text-white font-medium mb-1">Create Your Account</p>
+                    <p className="text-zinc-400 leading-relaxed">
+                      Enter your desired username, email, and password. Your credentials are encrypted and stored securely using industry-standard protocols.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[#00FF7F]/10 border border-[#00FF7F]/30 flex items-center justify-center text-[#00FF7F] font-bold">
+                    2
+                  </div>
+                  <div>
+                    <p className="text-white font-medium mb-1">Verify Your Email</p>
+                    <p className="text-zinc-400 leading-relaxed">
+                      Check your inbox for a verification link from noreply@speedx.app. Click it to confirm your email address. This prevents spam and ensures we can reach you when you're approved.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[#00FF7F]/10 border border-[#00FF7F]/30 flex items-center justify-center text-[#00FF7F] font-bold">
+                    3
+                  </div>
+                  <div>
+                    <p className="text-white font-medium mb-1">Admin Review & Approval</p>
+                    <p className="text-zinc-400 leading-relaxed">
+                      Our team manually reviews each application to ensure quality and prevent abuse. Current approval time is 24-72 hours. We prioritize active drivers and racing enthusiasts.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[#00FF7F]/10 border border-[#00FF7F]/30 flex items-center justify-center text-[#00FF7F] font-bold">
+                    4
+                  </div>
+                  <div>
+                    <p className="text-white font-medium mb-1">Welcome to SpeedX!</p>
+                    <p className="text-zinc-400 leading-relaxed">
+                      Once approved, you'll get an email with your login credentials. Start tracking trips, join Blitz challenges, compete on leaderboards, and connect with fellow speed enthusiasts.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4 pt-3 border-t border-zinc-800">
+                <div className="flex items-start gap-2">
+                  <span className="text-[#00FF7F] text-xs">💡</span>
+                  <div className="text-zinc-500 text-xs">
+                    <p className="font-medium mb-1">Pro Tips:</p>
+                    <ul className="space-y-1 pl-2">
+                      <li>• Check spam/promotions folder for emails</li>
+                      <li>• Add team@speedx.app to your contacts</li>
+                      <li>• Use a permanent email address</li>
+                      <li>• Choose a unique username (can't be changed later)</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* What to Expect */}
+            <div className="mb-6 p-4 bg-[#0D0D0D]/60 border border-zinc-700/30 rounded-xl">
+              <h3 className="text-white font-semibold mb-3 text-sm flex items-center gap-2">
+                <span className="text-[#FF3131]">⚡</span>
+                What You'll Get Access To
+              </h3>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="flex items-center gap-2 text-zinc-300">
+                  <span className="w-1.5 h-1.5 bg-[#00FF7F] rounded-full"></span>
+                  <span>Real-time trip tracking</span>
+                </div>
+                <div className="flex items-center gap-2 text-zinc-300">
+                  <span className="w-1.5 h-1.5 bg-[#00FF7F] rounded-full"></span>
+                  <span>Blitz challenge modes</span>
+                </div>
+                <div className="flex items-center gap-2 text-zinc-300">
+                  <span className="w-1.5 h-1.5 bg-[#00FF7F] rounded-full"></span>
+                  <span>Global leaderboards</span>
+                </div>
+                <div className="flex items-center gap-2 text-zinc-300">
+                  <span className="w-1.5 h-1.5 bg-[#00FF7F] rounded-full"></span>
+                  <span>Performance analytics</span>
+                </div>
+                <div className="flex items-center gap-2 text-zinc-300">
+                  <span className="w-1.5 h-1.5 bg-[#00FF7F] rounded-full"></span>
+                  <span>Social racing features</span>
+                </div>
+                <div className="flex items-center gap-2 text-zinc-300">
+                  <span className="w-1.5 h-1.5 bg-[#00FF7F] rounded-full"></span>
+                  <span>Achievement system</span>
+                </div>
+              </div>
+            </div>
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label htmlFor="username" className="block text-sm font-medium text-zinc-300 mb-2">
