@@ -41,10 +41,10 @@ export function ChallengesEvents() {
   const [challengeProgress, setChallengeProgress] = useState<ChallengeProgress | null>(null)
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [loading, setLoading] = useState(true)
+  const [countdown, setCountdown] = useState<string>("")
 
   useEffect(() => {
     fetchActiveChallenge()
-    fetchLeaderboard()
 
     // Blink LED every 3 seconds
     const blinkInterval = setInterval(() => {
@@ -84,6 +84,35 @@ export function ChallengesEvents() {
   useEffect(() => {
     if (activeChallenge) {
       fetchChallengeProgress()
+      fetchLeaderboard()
+      
+      // Start countdown timer
+      const countdownInterval = setInterval(() => {
+        if (activeChallenge) {
+          const now = new Date().getTime()
+          const end = new Date(activeChallenge.end_date).getTime()
+          const distance = end - now
+
+          if (distance < 0) {
+            setCountdown('ENDED')
+          } else {
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24))
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000)
+
+            if (days > 0) {
+              setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`)
+            } else if (hours > 0) {
+              setCountdown(`${hours}h ${minutes}m ${seconds}s`)
+            } else {
+              setCountdown(`${minutes}m ${seconds}s`)
+            }
+          }
+        }
+      }, 1000)
+
+      return () => clearInterval(countdownInterval)
     }
   }, [activeChallenge])
 
@@ -129,15 +158,56 @@ export function ChallengesEvents() {
   async function fetchLeaderboard() {
     if (!activeChallenge) return
 
+    console.log('Fetching leaderboard for challenge:', activeChallenge.id)
+
+    // Query blitz_points directly and aggregate
     const { data, error } = await supabase
-      .from('challenge_leaderboard')
-      .select('*')
+      .from('blitz_points')
+      .select(`
+        user_id,
+        points,
+        profiles:user_id (
+          username
+        )
+      `)
       .eq('challenge_id', activeChallenge.id)
-      .order('rank', { ascending: true })
-      .limit(5)
+      .order('points', { ascending: false })
+      .limit(20)
+
+    console.log('Leaderboard data:', { data, error })
 
     if (!error && data) {
-      setLeaderboard(data)
+      // Aggregate by user
+      const userTotals = new Map<string, { username: string, total_points: number, count: number }>()
+      
+      data.forEach((entry: any) => {
+        const userId = entry.user_id
+        const username = entry.profiles?.username || 'Anonymous'
+        const points = entry.points
+        
+        if (userTotals.has(userId)) {
+          const existing = userTotals.get(userId)!
+          existing.total_points += points
+          existing.count += 1
+        } else {
+          userTotals.set(userId, { username, total_points: points, count: 1 })
+        }
+      })
+      
+      // Convert to leaderboard format
+      const leaderboardData = Array.from(userTotals.entries())
+        .map(([user_id, stats], index) => ({
+          rank: index + 1,
+          user_id,
+          username: stats.username,
+          total_points: stats.total_points,
+          completion_count: stats.count,
+          avg_delta: 0
+        }))
+        .sort((a, b) => b.total_points - a.total_points)
+        .slice(0, 5)
+      
+      setLeaderboard(leaderboardData)
     }
   }
 
@@ -270,6 +340,21 @@ export function ChallengesEvents() {
                 {new Date(activeChallenge.start_date).toLocaleDateString()} - {new Date(activeChallenge.end_date).toLocaleDateString()}
               </div>
             </div>
+
+            {countdown && (
+              <div className="bg-zinc-900 border border-zinc-800 rounded p-3">
+                <div className="text-xs text-zinc-400 mb-1">Time Remaining</div>
+                <div className={`text-lg font-bold font-mono ${
+                  countdown === 'ENDED' 
+                    ? 'text-red-500' 
+                    : countdown.includes('d') 
+                      ? 'text-[#00FF7F]' 
+                      : 'text-yellow-500'
+                }`}>
+                  {countdown}
+                </div>
+              </div>
+            )}
 
             <div className="bg-zinc-900 border border-zinc-800 rounded p-3">
               <div className="text-xs text-zinc-400 mb-1">Target Goal</div>

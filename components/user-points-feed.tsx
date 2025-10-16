@@ -53,6 +53,8 @@ export function UserPointsFeed() {
 
   async function fetchPointsEntries() {
     setLoading(true)
+    console.log('Fetching points feed entries...')
+    
     const { data, error } = await supabase
       .from('blitz_points')
       .select(`
@@ -72,12 +74,21 @@ export function UserPointsFeed() {
       .order('created_at', { ascending: false })
       .limit(50)
 
+    console.log('Points feed result:', { 
+      count: data?.length || 0, 
+      error, 
+      sampleEntry: data?.[0] 
+    })
+
     if (!error && data) {
       const mappedData = data.map((entry: any) => ({
         ...entry,
         username: entry.profiles?.username || 'Anonymous User'
       }))
       setEntries(mappedData)
+      console.log('Mapped entries:', mappedData.length)
+    } else if (error) {
+      console.error('Error fetching points:', error)
     }
     setLoading(false)
   }
