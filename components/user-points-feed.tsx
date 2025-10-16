@@ -123,6 +123,8 @@ export function UserPointsFeed() {
                 const timeSaved = -entry.time_delta_seconds
                 const beatETA = timeSaved > 0
                 const distanceKm = (entry.distance_meters / 1000).toFixed(2)
+                const isIncomplete = entry.time_delta_seconds === 0 && entry.points === 0
+                const isCompletion = entry.points === 1 && !beatETA
                 
                 return (
                   <tr 
@@ -133,21 +135,32 @@ export function UserPointsFeed() {
                       <div className="font-mono text-zinc-200">{entry.username}</div>
                     </td>
                     <td className="p-2 text-center">
-                      <span className={`font-mono font-bold ${
-                        entry.points >= 5 ? 'text-yellow-400' :
-                        entry.points >= 3 ? 'text-blue-400' :
-                        entry.points >= 2 ? 'text-green-400' :
-                        'text-zinc-400'
-                      }`}>
-                        {entry.points}
-                      </span>
+                      {isIncomplete ? (
+                        <div className="flex items-center justify-center gap-1">
+                          <span className="font-mono text-xs text-red-400">❌</span>
+                          <span className="font-mono text-xs text-zinc-500">INC</span>
+                        </div>
+                      ) : (
+                        <span className={`font-mono font-bold ${
+                          entry.points >= 5 ? 'text-yellow-400' :
+                          entry.points >= 3 ? 'text-blue-400' :
+                          entry.points >= 2 ? 'text-green-400' :
+                          'text-zinc-400'
+                        }`}>
+                          {entry.points}
+                        </span>
+                      )}
                     </td>
                     <td className="p-2 text-center">
-                      <span className={`font-mono text-xs ${
-                        beatETA ? 'text-green-400' : 'text-red-400'
-                      }`}>
-                        {beatETA ? '+' : ''}{(timeSaved / 60).toFixed(1)}m
-                      </span>
+                      {isIncomplete ? (
+                        <span className="font-mono text-xs text-zinc-600">-</span>
+                      ) : (
+                        <span className={`font-mono text-xs ${
+                          beatETA ? 'text-green-400' : 'text-red-400'
+                        }`}>
+                          {beatETA ? '+' : ''}{(timeSaved / 60).toFixed(1)}m
+                        </span>
+                      )}
                     </td>
                     <td className="p-2 text-center">
                       <span className="font-mono text-xs text-zinc-400">
