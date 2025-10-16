@@ -65,6 +65,7 @@ export function UserPointsFeed() {
     console.log('Points feed result:', { 
       count: pointsData?.length || 0, 
       error: pointsError, 
+      sampleUserId: pointsData?.[0]?.user_id,
       sampleEntry: pointsData?.[0] 
     })
 
@@ -78,16 +79,28 @@ export function UserPointsFeed() {
         .select('*')
         .in('id', userIds)
       
-      console.log('Profiles data:', { count: profilesData?.length, error: profilesError, sample: profilesData?.[0] })
+      console.log('Profiles data:', { 
+        count: profilesData?.length, 
+        error: profilesError, 
+        errorDetails: profilesError ? JSON.stringify(profilesError) : null,
+        userIds: userIds.slice(0, 3),
+        sample: profilesData?.[0] 
+      })
       
       // Create username map - try multiple possible username fields
       const usernameMap = new Map<string, string>()
-      profilesData?.forEach((profile: any) => {
-        const username = profile.username || profile.name || profile.display_name || profile.email || null
-        if (username) {
-          usernameMap.set(profile.id, username)
-        }
-      })
+      
+      if (profilesData && profilesData.length > 0) {
+        profilesData.forEach((profile: any) => {
+          const username = profile.username || profile.name || profile.display_name || profile.email || null
+          if (username) {
+            usernameMap.set(profile.id, username)
+          }
+        })
+      } else if (profilesError) {
+        console.warn('Profiles query failed, users will show as User <id>')
+      }
+      
       console.log('Username map:', Object.fromEntries(usernameMap))
       
       // Map data with usernames
