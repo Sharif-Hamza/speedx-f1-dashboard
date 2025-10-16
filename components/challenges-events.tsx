@@ -188,19 +188,23 @@ export function ChallengesEvents() {
       // Get unique user IDs
       const userIds = Array.from(userTotals.keys())
       
-      // Fetch usernames
+      // Fetch usernames - get all columns to see what's available
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
-        .select('id, username')
+        .select('*')
         .in('id', userIds)
       
-      console.log('Profiles data:', { count: profilesData?.length, error: profilesError })
+      console.log('Profiles data:', { count: profilesData?.length, error: profilesError, sample: profilesData?.[0] })
       
-      // Create username map
+      // Create username map - try multiple possible username fields
       const usernameMap = new Map<string, string>()
       profilesData?.forEach((profile: any) => {
-        usernameMap.set(profile.id, profile.username)
+        const username = profile.username || profile.name || profile.display_name || profile.email || null
+        if (username) {
+          usernameMap.set(profile.id, username)
+        }
       })
+      console.log('Username map:', Object.fromEntries(usernameMap))
       
       // Convert to leaderboard format
       const leaderboardData = Array.from(userTotals.entries())
