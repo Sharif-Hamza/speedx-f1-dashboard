@@ -13,6 +13,7 @@ import { SpeedStats } from "@/components/speed-stats"
 import { StatsActivity } from "@/components/stats-activity"
 import { TickerTape } from "@/components/ticker-tape"
 import { PitControls } from "@/components/pit-controls"
+import { UserPointsFeed } from "@/components/user-points-feed"
 
 export default function MissionControl() {
   const [mounted, setMounted] = useState(false)
@@ -145,6 +146,10 @@ export default function MissionControl() {
 
         <div id="weather" className="lg:col-span-4" style={{ animationDelay: "600ms" }}>
           <WeatherPanel />
+        </div>
+
+        <div id="points-feed" className="lg:col-span-12" style={{ animationDelay: "650ms" }}>
+          <UserPointsFeed />
         </div>
 
         <div id="pit" className="lg:col-span-12" style={{ animationDelay: "700ms" }}>

@@ -6,7 +6,9 @@ import { Rajdhani } from "next/font/google"
 import { Share_Tech_Mono } from "next/font/google"
 import { Suspense } from "react"
 import { AuthProvider } from "@/contexts/AuthContext"
+import { BannerProvider } from "@/contexts/BannerContext"
 import { ConditionalHeader } from "@/components/conditional-header"
+import { BannerAnnouncement } from "@/components/banner-announcement"
 import "./globals.css"
 
 const inter = Inter({
@@ -50,8 +52,11 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${orbitron.variable} ${rajdhani.variable} ${shareTechMono.variable}`}>
       <body className="font-sans antialiased">
         <AuthProvider>
-          <ConditionalHeader />
-          <Suspense fallback={null}>{children}</Suspense>
+          <BannerProvider>
+            <BannerAnnouncement />
+            <ConditionalHeader />
+            <Suspense fallback={null}>{children}</Suspense>
+          </BannerProvider>
         </AuthProvider>
       </body>
     </html>

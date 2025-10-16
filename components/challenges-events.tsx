@@ -2,75 +2,181 @@
 
 import { useEffect, useState } from "react"
 import { MonitorPanel } from "./monitor-panel"
+import { supabase } from "@/lib/supabase"
 
-interface Event {
-  id: number
-  date: string
-  badge: "Online" | "Regional" | "Pro"
+interface Challenge {
+  id: string
+  title: string
   description: string
-  countdown: number
+  challenge_type: string
+  start_date: string
+  end_date: string
+  target_goal: number
+  prize_points: number
+  active: boolean
 }
 
-const EVENTS: Event[] = [
-  { id: 1, date: "Mar 15", badge: "Online", description: "Global Time Trial Championship", countdown: 3600 },
-  { id: 2, date: "Mar 18", badge: "Regional", description: "European Circuit Challenge", countdown: 7200 },
-  { id: 3, date: "Mar 22", badge: "Pro", description: "Pro Series Qualifier Round 1", countdown: 10800 },
-  { id: 4, date: "Mar 25", badge: "Online", description: "Weekend Sprint Series", countdown: 14400 },
-  { id: 5, date: "Mar 29", badge: "Regional", description: "Asia-Pacific Showdown", countdown: 18000 },
-]
+interface ChallengeProgress {
+  challenge_id: string
+  title: string
+  target_goal: number
+  current_points: number
+  participant_count: number
+  total_completions: number
+  progress_percentage: number
+}
 
 interface LeaderboardEntry {
-  pos: number
-  driver: string
-  delta: number
-  change: number
+  rank: number
+  user_id: string
+  username: string
+  total_points: number
+  completion_count: number
+  avg_delta: number
 }
-
-const LEADERBOARD: LeaderboardEntry[] = [
-  { pos: 1, driver: "VER", delta: -2.3, change: 1 },
-  { pos: 2, driver: "HAM", delta: -1.8, change: -1 },
-  { pos: 3, driver: "LEC", delta: -0.9, change: 2 },
-  { pos: 4, driver: "NOR", delta: 0.4, change: 0 },
-  { pos: 5, driver: "SAI", delta: 1.2, change: -2 },
-]
 
 export function ChallengesEvents() {
   const [ledBlink, setLedBlink] = useState(true)
-  const [countdowns, setCountdowns] = useState(EVENTS.map((e) => e.countdown))
+  const [activeChallenge, setActiveChallenge] = useState<Challenge | null>(null)
+  const [challengeProgress, setChallengeProgress] = useState<ChallengeProgress | null>(null)
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    fetchActiveChallenge()
+    fetchLeaderboard()
+
     // Blink LED every 3 seconds
     const blinkInterval = setInterval(() => {
       setLedBlink((prev) => !prev)
     }, 3000)
 
-    // Update countdowns
-    const countdownInterval = setInterval(() => {
-      setCountdowns((prev) => prev.map((c) => Math.max(0, c - 1)))
-    }, 1000)
+    // Refresh data every 30 seconds
+    const refreshInterval = setInterval(() => {
+      fetchChallengeProgress()
+      fetchLeaderboard()
+    }, 30000)
+
+    // Subscribe to real-time updates
+    const channel = supabase
+      .channel('challenges-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'blitz_points',
+        },
+        () => {
+          fetchChallengeProgress()
+          fetchLeaderboard()
+        }
+      )
+      .subscribe()
 
     return () => {
       clearInterval(blinkInterval)
-      clearInterval(countdownInterval)
+      clearInterval(refreshInterval)
+      supabase.removeChannel(channel)
     }
   }, [])
 
-  const formatCountdown = (seconds: number) => {
-    const h = Math.floor(seconds / 3600)
-    const m = Math.floor((seconds % 3600) / 60)
-    const s = seconds % 60
-    return `${h}h ${m}m ${s}s`
+  useEffect(() => {
+    if (activeChallenge) {
+      fetchChallengeProgress()
+    }
+  }, [activeChallenge])
+
+  async function fetchActiveChallenge() {
+    setLoading(true)
+    const now = new Date().toISOString()
+    
+    console.log('Fetching challenges for:', now)
+    
+    const { data, error } = await supabase
+      .from('blitz_challenges')
+      .select('*')
+      .eq('active', true)
+      .lte('start_date', now)
+      .gte('end_date', now)
+
+    console.log('Challenge query result:', { data, error })
+    
+    if (!error && data && data.length > 0) {
+      // Sort by start_date descending and take first
+      const sorted = data.sort((a, b) => 
+        new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+      )
+      setActiveChallenge(sorted[0])
+    }
+    setLoading(false)
   }
 
-  const getBadgeColor = (badge: Event["badge"]) => {
-    switch (badge) {
-      case "Online":
-        return "bg-blue-500/20 text-blue-500"
-      case "Regional":
-        return "bg-purple-500/20 text-purple-500"
-      case "Pro":
-        return "bg-yellow-500/20 text-yellow-500"
+  async function fetchChallengeProgress() {
+    if (!activeChallenge) return
+
+    const { data, error } = await supabase
+      .from('challenge_progress')
+      .select('*')
+      .eq('challenge_id', activeChallenge.id)
+      .single()
+
+    if (!error && data) {
+      setChallengeProgress(data)
     }
+  }
+
+  async function fetchLeaderboard() {
+    if (!activeChallenge) return
+
+    const { data, error } = await supabase
+      .from('challenge_leaderboard')
+      .select('*')
+      .eq('challenge_id', activeChallenge.id)
+      .order('rank', { ascending: true })
+      .limit(5)
+
+    if (!error && data) {
+      setLeaderboard(data)
+    }
+  }
+
+  if (loading) {
+    return (
+      <MonitorPanel
+        title={
+          <div className="flex items-center gap-2">
+            <span className="text-yellow-500">🏆</span>
+            CHALLENGES & EVENTS
+          </div>
+        }
+        indicator="green"
+      >
+        <div className="bg-zinc-950 rounded border border-zinc-700 p-8 text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#00FF7F] mx-auto"></div>
+          <p className="text-zinc-400 mt-4 text-sm">Loading challenges...</p>
+        </div>
+      </MonitorPanel>
+    )
+  }
+
+  if (!activeChallenge) {
+    return (
+      <MonitorPanel
+        title={
+          <div className="flex items-center gap-2">
+            <span className="text-yellow-500">🏆</span>
+            CHALLENGES & EVENTS
+          </div>
+        }
+        indicator="gray"
+      >
+        <div className="bg-zinc-950 rounded border border-zinc-700 p-8 text-center">
+          <p className="text-zinc-400 text-sm">No active challenges at the moment</p>
+          <p className="text-zinc-500 text-xs mt-2">Check back soon for new challenges!</p>
+        </div>
+      </MonitorPanel>
+    )
   }
 
   return (
@@ -90,39 +196,58 @@ export function ChallengesEvents() {
         <div className="grid md:grid-cols-2 gap-2">
           {/* Left column - Active Challenge */}
           <div className="bg-zinc-900 border border-zinc-800 rounded p-2 space-y-2">
-            <div className="text-xs font-bold text-yellow-500 tracking-wider">WEEKLY BLITZ — BEAT THE MAP</div>
+            <div className="text-xs font-bold text-yellow-500 tracking-wider">
+              {activeChallenge.challenge_type.toUpperCase()} BLITZ — {activeChallenge.title.toUpperCase()}
+            </div>
 
             <div>
-              <div className="text-3xl font-bold text-[#00FF7F] mb-1">2,500</div>
+              <div className="text-3xl font-bold text-[#00FF7F] mb-1">
+                {activeChallenge.prize_points.toLocaleString()}
+              </div>
               <div className="text-xs text-zinc-500">Prize Points</div>
             </div>
 
             {/* Progress bar */}
             <div>
               <div className="flex justify-between text-xs text-zinc-400 mb-1">
-                <span>Community Attempts</span>
-                <span>68%</span>
+                <span>Community Progress</span>
+                <span>{challengeProgress ? `${Math.round(challengeProgress.progress_percentage)}%` : '0%'}</span>
               </div>
               <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
-                <div className="h-full bg-[#00FF7F] rounded-full" style={{ width: "68%" }} />
+                <div 
+                  className="h-full bg-gradient-to-r from-[#00FF7F] to-[#00D9FF] rounded-full transition-all duration-500" 
+                  style={{ width: `${challengeProgress ? Math.min(challengeProgress.progress_percentage, 100) : 0}%` }} 
+                />
               </div>
+              {challengeProgress && (
+                <div className="text-xs text-zinc-500 mt-1">
+                  {challengeProgress.current_points.toLocaleString()} / {activeChallenge.target_goal.toLocaleString()} points
+                </div>
+              )}
             </div>
 
-            {/* Bullet list */}
-            <ul className="space-y-2 text-sm text-zinc-300">
-              <li className="flex items-start gap-2">
-                <span className="text-[#00FF7F] mt-1">•</span>
-                <span>Select destination → Drive</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-[#00FF7F] mt-1">•</span>
-                <span>Compare Actual vs Expected</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-[#00FF7F] mt-1">•</span>
-                <span>Share your delta</span>
-              </li>
-            </ul>
+            {/* Description */}
+            <div className="text-sm text-zinc-300">
+              {activeChallenge.description}
+            </div>
+
+            {/* Stats */}
+            {challengeProgress && (
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div className="bg-zinc-800 rounded p-2">
+                  <div className="text-zinc-400">Participants</div>
+                  <div className="text-[#00FF7F] font-bold text-lg">
+                    {challengeProgress.participant_count}
+                  </div>
+                </div>
+                <div className="bg-zinc-800 rounded p-2">
+                  <div className="text-zinc-400">Completions</div>
+                  <div className="text-[#00D9FF] font-bold text-lg">
+                    {challengeProgress.total_completions}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* CTA buttons */}
             <div className="flex gap-2 pt-2">
@@ -135,36 +260,45 @@ export function ChallengesEvents() {
             </div>
           </div>
 
-          {/* Right column - Upcoming Events */}
+          {/* Right column - Challenge Info */}
           <div className="space-y-2">
-            <div className="text-xs font-bold text-zinc-500 tracking-wider mb-3">UPCOMING EVENTS</div>
-            {EVENTS.map((event, index) => (
-              <div
-                key={event.id}
-                className="bg-zinc-900 border border-zinc-800 rounded p-3 hover:border-zinc-700 transition-colors cursor-pointer group"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-bold text-zinc-400">{event.date}</span>
-                      <span className={`px-2 py-0.5 rounded text-xs font-bold ${getBadgeColor(event.badge)}`}>
-                        {event.badge}
-                      </span>
-                    </div>
-                    <div className="text-sm text-white mb-1">{event.description}</div>
-                    <div className="text-xs text-zinc-500 font-mono">{formatCountdown(countdowns[index])}</div>
-                  </div>
-                  <svg
-                    className="h-5 w-5 text-zinc-600 group-hover:text-[#00FF7F] transition-colors flex-shrink-0"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
+            <div className="text-xs font-bold text-zinc-500 tracking-wider mb-3">CHALLENGE DETAILS</div>
+            
+            <div className="bg-zinc-900 border border-zinc-800 rounded p-3">
+              <div className="text-xs text-zinc-400 mb-1">Challenge Period</div>
+              <div className="text-sm text-white">
+                {new Date(activeChallenge.start_date).toLocaleDateString()} - {new Date(activeChallenge.end_date).toLocaleDateString()}
               </div>
-            ))}
+            </div>
+
+            <div className="bg-zinc-900 border border-zinc-800 rounded p-3">
+              <div className="text-xs text-zinc-400 mb-1">Target Goal</div>
+              <div className="text-sm text-white font-mono">
+                {activeChallenge.target_goal.toLocaleString()} pts
+              </div>
+            </div>
+
+            <div className="bg-zinc-900 border border-zinc-800 rounded p-3">
+              <div className="text-xs text-zinc-400 mb-2">How to Participate</div>
+              <ul className="space-y-1.5 text-xs text-zinc-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-[#00FF7F]">•</span>
+                  <span>Open SpeedX app & enable Blitz mode</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#00FF7F]">•</span>
+                  <span>Set destination and start driving</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#00FF7F]">•</span>
+                  <span>Beat expected time to earn points</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-[#00FF7F]">•</span>
+                  <span>Points auto-contributed to challenge</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -172,34 +306,42 @@ export function ChallengesEvents() {
         <div className="mt-4 pt-4 border-t border-zinc-800">
           <div className="text-xs font-bold text-zinc-500 tracking-wider mb-2">LEADERBOARD</div>
           <div className="bg-zinc-900 border border-zinc-800 rounded overflow-hidden">
-            <table className="w-full text-xs">
-              <thead className="bg-zinc-800">
-                <tr>
-                  <th className="text-left p-2 font-bold text-zinc-400">Pos</th>
-                  <th className="text-left p-2 font-bold text-zinc-400">Driver</th>
-                  <th className="text-right p-2 font-bold text-zinc-400">Delta vs Map</th>
-                </tr>
-              </thead>
-              <tbody>
-                {LEADERBOARD.map((entry) => (
-                  <tr key={entry.pos} className="border-t border-zinc-800 hover:bg-zinc-800/50 transition-colors">
-                    <td className="p-2 font-bold">{entry.pos}</td>
-                    <td className="p-2 flex items-center gap-2">
-                      {entry.driver}
-                      {entry.change !== 0 && (
-                        <span className={entry.change > 0 ? "text-green-500" : "text-red-500"}>
-                          {entry.change > 0 ? "▲" : "▼"}
-                        </span>
-                      )}
-                    </td>
-                    <td className={`p-2 text-right font-bold ${entry.delta < 0 ? "text-green-500" : "text-red-500"}`}>
-                      {entry.delta > 0 ? "+" : ""}
-                      {entry.delta.toFixed(1)}s
-                    </td>
+            {leaderboard.length === 0 ? (
+              <div className="p-4 text-center text-zinc-500 text-xs">
+                No entries yet. Be the first to compete!
+              </div>
+            ) : (
+              <table className="w-full text-xs">
+                <thead className="bg-zinc-800">
+                  <tr>
+                    <th className="text-left p-2 font-bold text-zinc-400">Rank</th>
+                    <th className="text-left p-2 font-bold text-zinc-400">Driver</th>
+                    <th className="text-right p-2 font-bold text-zinc-400">Points</th>
+                    <th className="text-right p-2 font-bold text-zinc-400">Runs</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {leaderboard.map((entry) => (
+                    <tr key={entry.user_id} className="border-t border-zinc-800 hover:bg-zinc-800/50 transition-colors">
+                      <td className="p-2 font-bold">
+                        <span className={entry.rank <= 3 ? "text-[#00FF7F]" : "text-zinc-300"}>
+                          {entry.rank}
+                        </span>
+                      </td>
+                      <td className="p-2 text-zinc-300">
+                        {entry.username || `Driver ${entry.user_id.slice(0, 6)}`}
+                      </td>
+                      <td className="p-2 text-right font-bold text-[#00FF7F]">
+                        {entry.total_points}
+                      </td>
+                      <td className="p-2 text-right text-zinc-400">
+                        {entry.completion_count}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
       </div>
