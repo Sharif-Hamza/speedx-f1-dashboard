@@ -160,29 +160,20 @@ export function ChallengesEvents() {
 
     console.log('Fetching leaderboard for challenge:', activeChallenge.id)
 
-    // Query blitz_points directly and aggregate
-    const { data, error } = await supabase
+    // Query blitz_points directly
+    const { data: pointsData, error: pointsError } = await supabase
       .from('blitz_points')
-      .select(`
-        user_id,
-        points,
-        profiles!blitz_points_user_id_fkey (
-          username
-        )
-      `)
+      .select('user_id, points')
       .eq('challenge_id', activeChallenge.id)
-      .order('points', { ascending: false })
-      .limit(20)
 
-    console.log('Leaderboard data:', { data, error })
+    console.log('Leaderboard points data:', { count: pointsData?.length, error: pointsError })
 
-    if (!error && data) {
+    if (!pointsError && pointsData && pointsData.length > 0) {
       // Aggregate by user
-      const userTotals = new Map<string, { username: string, total_points: number, count: number }>()
+      const userTotals = new Map<string, { total_points: number, count: number }>()
       
-      data.forEach((entry: any) => {
+      pointsData.forEach((entry: any) => {
         const userId = entry.user_id
-        const username = entry.profiles?.username || 'Anonymous'
         const points = entry.points
         
         if (userTotals.has(userId)) {
@@ -190,24 +181,46 @@ export function ChallengesEvents() {
           existing.total_points += points
           existing.count += 1
         } else {
-          userTotals.set(userId, { username, total_points: points, count: 1 })
+          userTotals.set(userId, { total_points: points, count: 1 })
         }
+      })
+      
+      // Get unique user IDs
+      const userIds = Array.from(userTotals.keys())
+      
+      // Fetch usernames
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, username')
+        .in('id', userIds)
+      
+      console.log('Profiles data:', { count: profilesData?.length, error: profilesError })
+      
+      // Create username map
+      const usernameMap = new Map<string, string>()
+      profilesData?.forEach((profile: any) => {
+        usernameMap.set(profile.id, profile.username)
       })
       
       // Convert to leaderboard format
       const leaderboardData = Array.from(userTotals.entries())
-        .map(([user_id, stats], index) => ({
-          rank: index + 1,
+        .map(([user_id, stats]) => ({
+          rank: 0,
           user_id,
-          username: stats.username,
+          username: usernameMap.get(user_id) || `User ${user_id.slice(0, 6)}`,
           total_points: stats.total_points,
           completion_count: stats.count,
           avg_delta: 0
         }))
         .sort((a, b) => b.total_points - a.total_points)
+        .map((entry, index) => ({ ...entry, rank: index + 1 }))
         .slice(0, 5)
       
+      console.log('Final leaderboard:', leaderboardData)
       setLeaderboard(leaderboardData)
+    } else {
+      console.log('No points data or error:', pointsError)
+      setLeaderboard([])
     }
   }
 

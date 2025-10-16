@@ -55,40 +55,50 @@ export function UserPointsFeed() {
     setLoading(true)
     console.log('Fetching points feed entries...')
     
-    const { data, error } = await supabase
+    // Fetch points data without join
+    const { data: pointsData, error: pointsError } = await supabase
       .from('blitz_points')
-      .select(`
-        id,
-        user_id,
-        challenge_id,
-        points,
-        completion_time_seconds,
-        expected_time_seconds,
-        time_delta_seconds,
-        distance_meters,
-        created_at,
-        profiles!blitz_points_user_id_fkey (
-          username
-        )
-      `)
+      .select('id, user_id, challenge_id, points, completion_time_seconds, expected_time_seconds, time_delta_seconds, distance_meters, created_at')
       .order('created_at', { ascending: false })
       .limit(50)
 
     console.log('Points feed result:', { 
-      count: data?.length || 0, 
-      error, 
-      sampleEntry: data?.[0] 
+      count: pointsData?.length || 0, 
+      error: pointsError, 
+      sampleEntry: pointsData?.[0] 
     })
 
-    if (!error && data) {
-      const mappedData = data.map((entry: any) => ({
+    if (!pointsError && pointsData && pointsData.length > 0) {
+      // Get unique user IDs
+      const userIds = [...new Set(pointsData.map(p => p.user_id))]
+      
+      // Fetch usernames
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, username')
+        .in('id', userIds)
+      
+      console.log('Profiles data:', { count: profilesData?.length, error: profilesError })
+      
+      // Create username map
+      const usernameMap = new Map<string, string>()
+      profilesData?.forEach((profile: any) => {
+        usernameMap.set(profile.id, profile.username)
+      })
+      
+      // Map data with usernames
+      const mappedData = pointsData.map((entry: any) => ({
         ...entry,
-        username: entry.profiles?.username || 'Anonymous User'
+        username: usernameMap.get(entry.user_id) || 'Anonymous User'
       }))
+      
       setEntries(mappedData)
       console.log('Mapped entries:', mappedData.length)
-    } else if (error) {
-      console.error('Error fetching points:', error)
+    } else if (pointsError) {
+      console.error('Error fetching points:', pointsError)
+      setEntries([])
+    } else {
+      setEntries([])
     }
     setLoading(false)
   }
