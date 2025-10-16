@@ -70,8 +70,8 @@ export function UserPointsFeed() {
     })
 
     if (!pointsError && pointsData && pointsData.length > 0) {
-      // Get unique user IDs
-      const userIds = [...new Set(pointsData.map(p => p.user_id))]
+      // Get unique user IDs - convert to lowercase for matching
+      const userIds = [...new Set(pointsData.map(p => p.user_id.toLowerCase()))]
       
       // Fetch usernames - get all columns to see what's available
       const { data: profilesData, error: profilesError } = await supabase
@@ -103,10 +103,10 @@ export function UserPointsFeed() {
       
       console.log('Username map:', Object.fromEntries(usernameMap))
       
-      // Map data with usernames
+      // Map data with usernames - try both cases
       const mappedData = pointsData.map((entry: any) => ({
         ...entry,
-        username: usernameMap.get(entry.user_id) || `User ${entry.user_id?.slice(0, 8) || 'Unknown'}`
+        username: usernameMap.get(entry.user_id.toLowerCase()) || usernameMap.get(entry.user_id) || `User ${entry.user_id?.slice(0, 8) || 'Unknown'}`
       }))
       
       setEntries(mappedData)

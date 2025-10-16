@@ -185,8 +185,8 @@ export function ChallengesEvents() {
         }
       })
       
-      // Get unique user IDs
-      const userIds = Array.from(userTotals.keys())
+      // Get unique user IDs - convert to lowercase for matching
+      const userIds = Array.from(userTotals.keys()).map(id => id.toLowerCase())
       
       // Fetch usernames - get all columns to see what's available
       const { data: profilesData, error: profilesError } = await supabase
@@ -218,12 +218,12 @@ export function ChallengesEvents() {
       
       console.log('Username map:', Object.fromEntries(usernameMap))
       
-      // Convert to leaderboard format
+      // Convert to leaderboard format - try both cases for username lookup
       const leaderboardData = Array.from(userTotals.entries())
         .map(([user_id, stats]) => ({
           rank: 0,
           user_id,
-          username: usernameMap.get(user_id) || `User ${user_id.slice(0, 6)}`,
+          username: usernameMap.get(user_id.toLowerCase()) || usernameMap.get(user_id) || `User ${user_id.slice(0, 6)}`,
           total_points: stats.total_points,
           completion_count: stats.count,
           avg_delta: 0
