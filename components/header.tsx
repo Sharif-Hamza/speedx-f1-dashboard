@@ -58,10 +58,8 @@ export function Header() {
         className={cn(
           "fixed left-0 right-0 z-50 transition-all duration-300",
           scrolled ? "bg-background/95 backdrop-blur-sm py-2 sm:py-3" : "bg-transparent py-3 sm:py-4",
+          hasBanner ? "top-[36px] sm:top-[48px] md:top-[60px]" : "top-0"
         )}
-        style={{
-          top: hasBanner ? "60px" : "0",
-        }}
       >
         <nav className="container mx-auto px-4 max-w-[1200px]" aria-label="Main navigation">
           <div className="flex items-center justify-between">

@@ -120,11 +120,13 @@ export function BannerAnnouncement() {
   const textColor = banner.style?.textColor || "#000000"
 
   return (
+    <>
     <div
-      className="fixed top-0 left-0 right-0 w-full py-3 px-4 overflow-hidden animate-in slide-in-from-top duration-500 z-[60]"
+      className="fixed top-0 left-0 right-0 w-full py-1.5 sm:py-2 md:py-3 px-2 sm:px-4 overflow-hidden animate-in slide-in-from-top duration-500 z-[60]"
       style={{
         backgroundColor: bgColor,
         color: textColor,
+        paddingTop: 'calc(env(safe-area-inset-top, 0px) + 4px)'
       }}
     >
       {/* Animated background pattern */}
@@ -135,18 +137,18 @@ export function BannerAnnouncement() {
       </div>
 
       <div className="container mx-auto max-w-7xl relative z-10">
-        <div className="flex items-center justify-center gap-3 text-center flex-wrap">
+        <div className="flex items-center justify-center gap-1.5 sm:gap-2 md:gap-3 text-center flex-wrap">
           {/* Title */}
-          <div className="font-bold text-sm sm:text-base md:text-lg tracking-wide">
+          <div className="font-bold text-xs sm:text-sm md:text-base tracking-wide">
             {banner.title}
           </div>
 
           {/* Message or Countdown */}
           {banner.type === "countdown" ? (
-            <div className="flex items-center gap-2 flex-wrap justify-center">
-              <span className="text-xs sm:text-sm">{banner.message}</span>
+            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center">
+              <span className="text-[10px] sm:text-xs md:text-sm">{banner.message}</span>
               <div 
-                className="font-mono font-bold text-base sm:text-lg md:text-xl px-3 py-1 rounded-full border-2 min-w-[140px] sm:min-w-[180px] text-center tabular-nums"
+                className="font-mono font-bold text-xs sm:text-sm md:text-base lg:text-lg px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border sm:border-2 min-w-[100px] sm:min-w-[140px] md:min-w-[180px] text-center tabular-nums"
                 style={{
                   borderColor: textColor,
                   backgroundColor: `${bgColor}dd`,
@@ -156,10 +158,13 @@ export function BannerAnnouncement() {
               </div>
             </div>
           ) : (
-            <div className="text-xs sm:text-sm">{banner.message}</div>
+            <div className="text-[10px] sm:text-xs md:text-sm">{banner.message}</div>
           )}
         </div>
       </div>
     </div>
+    {/* Spacer to push content below banner on iOS/mobile */}
+    <div className="h-[36px] sm:h-[48px] md:h-[60px]" aria-hidden />
+    </>
   )
 }
