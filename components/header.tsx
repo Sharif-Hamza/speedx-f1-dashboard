@@ -49,6 +49,7 @@ export function Header() {
     { href: "/", label: "Home" },
     { href: "/dashboard", label: "Dashboard" },
     { href: "/support", label: "Support" },
+    { href: "/docs", label: "Docs" },
     { href: "/privacy", label: "Privacy" },
   ]
 
