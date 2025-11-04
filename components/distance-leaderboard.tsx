@@ -108,7 +108,7 @@ export function DistanceLeaderboard() {
       const entries: LeaderboardEntry[] = Object.entries(userTotalDistances)
         .map(([userId, totalDistanceM]) => ({
           user_id: userId,
-          username: usernameMap[userId] || "Unknown",
+          username: usernameMap[userId] || `User-${userId.slice(0, 8)}`,
           total_distance_miles: totalDistanceM * 0.000621371, // Convert meters to miles
           position: 0, // Will be set below
           change: 0, // Will be calculated below
