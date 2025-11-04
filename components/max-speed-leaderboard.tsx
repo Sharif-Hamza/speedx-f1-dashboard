@@ -121,7 +121,7 @@ export function MaxSpeedLeaderboard() {
       const entries: LeaderboardEntry[] = Object.entries(userMaxSpeeds)
         .map(([userId, maxSpeedMps]) => ({
           user_id: userId,
-          username: usernameMap[userId] || `User-${userId.slice(0, 8)}`,
+          username: usernameMap[userId] || "Unknown",
           max_speed_mph: maxSpeedMps * 2.23694, // Convert MPS to MPH
           position: 0, // Will be set below
           change: 0, // Will be calculated below
