@@ -36,18 +36,18 @@ export function DistanceLeaderboard() {
       console.log("📅 [DistanceLeaderboard] Week starts (EST-based):", startOfWeek.toISOString())
       console.log("📅 [DistanceLeaderboard] Week date range:", currentWeek.startDateStr, "to", currentWeek.endDateStr)
       
-      // Get total distance per user from user_stats
+      // Get total distance per user from trips
       let query = supabase
-        .from("user_stats")
+        .from("trips")
         .select(`
           user_id,
-          distance,
-          timestamp
+          distance_m,
+          started_at
         `)
       
       // If weekly mode, only get trips from this week
       if (viewMode === "weekly") {
-        query = query.gte("timestamp", startOfWeek.toISOString())
+        query = query.gte("started_at", startOfWeek.toISOString())
         console.log("📆 [DistanceLeaderboard] Filtering for trips since:", startOfWeek.toISOString())
       }
       
@@ -66,7 +66,7 @@ export function DistanceLeaderboard() {
         if (!acc[trip.user_id]) {
           acc[trip.user_id] = 0
         }
-        acc[trip.user_id] += trip.distance
+        acc[trip.user_id] += trip.distance_m
         return acc
       }, {} as Record<string, number>)
 
@@ -155,14 +155,14 @@ export function DistanceLeaderboard() {
         try {
           // Get last week's trips
           const { data: lastWeekTrips, error: tripsError } = await supabase
-            .from("user_stats")
+            .from("trips")
             .select(`
               user_id,
-              distance,
-              timestamp
+              distance_m,
+              started_at
             `)
-            .gte("timestamp", lastWeekStart.toISOString())
-            .lte("timestamp", lastWeekEnd.toISOString())
+            .gte("started_at", lastWeekStart.toISOString())
+            .lte("started_at", lastWeekEnd.toISOString())
           
           if (tripsError) {
             console.warn('⚠️ [DistanceLeaderboard] Could not fetch last week trips:', tripsError)
@@ -172,7 +172,7 @@ export function DistanceLeaderboard() {
               if (!acc[trip.user_id]) {
                 acc[trip.user_id] = 0
               }
-              acc[trip.user_id] += trip.distance
+              acc[trip.user_id] += trip.distance_m
               return acc
             }, {} as Record<string, number>)
             
@@ -239,7 +239,7 @@ export function DistanceLeaderboard() {
         {
           event: "*", // Listen to ALL changes
           schema: "public",
-          table: "user_stats",
+          table: "trips",
         },
         () => {
           console.log("🔄 Trip change detected, refreshing distance leaderboard...")

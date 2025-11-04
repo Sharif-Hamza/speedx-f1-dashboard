@@ -36,23 +36,23 @@ export function MaxSpeedLeaderboard() {
       console.log("📅 [MaxSpeedLeaderboard] Week starts (EST-based):", startOfWeek.toISOString())
       console.log("📅 [MaxSpeedLeaderboard] Week date range:", currentWeek.startDateStr, "to", currentWeek.endDateStr)
       
-      // Get all users with their max speed from user_stats
+      // Get all users with their max speed from trips
       // First, get max speed per user
       let query = supabase
-        .from("user_stats")
+        .from("trips")
         .select(`
           user_id,
-          max_speed,
-          timestamp
+          max_speed_mps,
+          started_at
         `)
       
       // If weekly mode, only get trips from this week
       if (viewMode === "weekly") {
-        query = query.gte("timestamp", startOfWeek.toISOString())
+        query = query.gte("started_at", startOfWeek.toISOString())
         console.log("📆 [MaxSpeedLeaderboard] Filtering for trips since:", startOfWeek.toISOString())
       }
       
-      const { data: maxSpeeds, error } = await query.order("max_speed", { ascending: false })
+      const { data: maxSpeeds, error } = await query.order("max_speed_mps", { ascending: false })
 
       console.log(`📊 [MaxSpeedLeaderboard] Fetched ${maxSpeeds?.length || 0} trips from database`)
       
@@ -70,8 +70,8 @@ export function MaxSpeedLeaderboard() {
 
       // Group by user_id and get their max speed
       const userMaxSpeeds = maxSpeeds.reduce((acc, trip) => {
-        if (!acc[trip.user_id] || trip.max_speed > acc[trip.user_id]) {
-          acc[trip.user_id] = trip.max_speed
+        if (!acc[trip.user_id] || trip.max_speed_mps > acc[trip.user_id]) {
+          acc[trip.user_id] = trip.max_speed_mps
         }
         return acc
       }, {} as Record<string, number>)
@@ -170,23 +170,23 @@ export function MaxSpeedLeaderboard() {
         try {
           // Get last week's trips
           const { data: lastWeekTrips, error: tripsError } = await supabase
-            .from("user_stats")
+            .from("trips")
             .select(`
               user_id,
-              max_speed,
-              timestamp
+              max_speed_mps,
+              started_at
             `)
-            .gte("timestamp", lastWeekStart.toISOString())
-            .lte("timestamp", lastWeekEnd.toISOString())
-            .order("max_speed", { ascending: false })
+            .gte("started_at", lastWeekStart.toISOString())
+            .lte("started_at", lastWeekEnd.toISOString())
+            .order("max_speed_mps", { ascending: false })
           
           if (tripsError) {
             console.warn('⚠️ [MaxSpeedLeaderboard] Could not fetch last week trips:', tripsError)
           } else if (lastWeekTrips && lastWeekTrips.length > 0) {
             // Group by user and get max speed
             const userMaxSpeeds = lastWeekTrips.reduce((acc, trip) => {
-              if (!acc[trip.user_id] || trip.max_speed > acc[trip.user_id]) {
-                acc[trip.user_id] = trip.max_speed
+              if (!acc[trip.user_id] || trip.max_speed_mps > acc[trip.user_id]) {
+                acc[trip.user_id] = trip.max_speed_mps
               }
               return acc
             }, {} as Record<string, number>)
@@ -254,7 +254,7 @@ export function MaxSpeedLeaderboard() {
         {
           event: "*", // Listen to ALL changes (INSERT, UPDATE, DELETE)
           schema: "public",
-          table: "user_stats",
+          table: "trips",
         },
         () => {
           console.log("🔄 Trip change detected, refreshing max speed leaderboard...")
